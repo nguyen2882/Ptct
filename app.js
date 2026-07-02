@@ -18,6 +18,16 @@ let state = {
 
 // Khởi tạo và tải dữ liệu từ localStorage
 function initApp() {
+    // 0. Kiểm tra phiên bản dữ liệu (để tự động chuyển giao sang bộ dữ liệu giáo dục/sự kiện)
+    const DB_VERSION = "2.0";
+    const savedVersion = localStorage.getItem("itflow_db_version");
+    if (savedVersion !== DB_VERSION) {
+        localStorage.removeItem("itflow_tasks");
+        localStorage.removeItem("itflow_members");
+        localStorage.removeItem("itflow_guidelines");
+        localStorage.setItem("itflow_db_version", DB_VERSION);
+    }
+
     // 1. Tải Theme
     const savedTheme = localStorage.getItem("itflow_theme");
     if (savedTheme) {
@@ -249,7 +259,7 @@ function createTaskCardDOM(task, isDraggable = true) {
     const assigneeAvatar = member ? member.avatar : "??";
 
     // Phân loại nhãn
-    const typeLabel = task.type === "technical" ? "Hỗ trợ kỹ thuật" : "Công việc tập thể";
+    const typeLabel = task.type === "technical" ? "Hỗ trợ kỹ thuật" : "Tổ chức Sự kiện";
     const typeClass = task.type === "technical" ? "tech" : "collective";
 
     // Độ ưu tiên nhãn
@@ -468,6 +478,7 @@ function setupEventListeners() {
 
     // Form thêm thành viên
     document.getElementById("form-add-member").addEventListener("submit", handleAddMemberSubmit);
+    document.getElementById("btn-cancel-member-edit").addEventListener("click", cancelMemberEdit);
 
     // Backup & Restore
     document.getElementById("btn-export-data").addEventListener("click", exportData);
@@ -657,7 +668,7 @@ function viewTaskDetail(taskId) {
     const member = state.members.find(m => m.id === task.assignedTo);
     const assigneeName = member ? `${member.name} (${member.role})` : "Chưa phân công";
     
-    const typeLabel = task.type === "technical" ? "Hỗ trợ kỹ thuật" : "Công việc tập thể";
+    const typeLabel = task.type === "technical" ? "Hỗ trợ kỹ thuật" : "Tổ chức Sự kiện";
     const typeClass = task.type === "technical" ? "tech" : "collective";
 
     let priorityLabel = "Thấp";
@@ -822,7 +833,7 @@ function renderGuidelineDetail(guideId) {
         return;
     }
 
-    const typeLabel = guide.type === "technical" ? "Hỗ trợ kỹ thuật" : "Công việc tập thể";
+    const typeLabel = guide.type === "technical" ? "Hỗ trợ kỹ thuật" : "Tổ chức Sự kiện";
     const typeClass = guide.type === "technical" ? "tech" : "collective";
 
     contentPanel.innerHTML = `
@@ -1034,36 +1045,85 @@ function renderTeamMembers() {
                     <i class="fa-solid fa-list-check"></i> Đang làm: ${activeTasksCount} | Tổng giao: ${totalTasksCount}
                 </span>
             </div>
-            <button class="member-delete-btn" onclick="deleteMember('${member.id}')" title="Xóa nhân viên">
+            <button class="member-delete-btn" onclick="deleteMember('${member.id}')" title="Xóa nhân viên" style="right: 12px;">
                 <i class="fa-solid fa-user-minus"></i>
+            </button>
+            <button class="member-delete-btn edit-member-btn" onclick="startEditMember('${member.id}')" title="Sửa thông tin nhân viên" style="right: 36px; color: var(--color-primary);">
+                <i class="fa-solid fa-user-pen"></i>
             </button>
         `;
         grid.appendChild(card);
     });
 }
 
+function startEditMember(memberId) {
+    const member = state.members.find(m => m.id === memberId);
+    if (!member) return;
+
+    document.getElementById("member-id").value = member.id;
+    document.getElementById("member-name").value = member.name;
+    document.getElementById("member-role").value = member.role;
+    document.getElementById("member-initials").value = member.avatar;
+
+    document.getElementById("member-form-title").innerText = "Sửa thông tin thành viên";
+    
+    const icon = document.getElementById("btn-submit-member-icon");
+    icon.className = "fa-solid fa-check";
+    
+    document.getElementById("btn-submit-member-text").innerText = "Cập nhật";
+    document.getElementById("btn-cancel-member-edit").style.display = "block";
+
+    // Scroll nhẹ đến form chỉnh sửa trên mobile
+    document.getElementById("form-add-member").scrollIntoView({ behavior: 'smooth' });
+}
+
+function cancelMemberEdit() {
+    document.getElementById("member-id").value = "";
+    document.getElementById("form-add-member").reset();
+
+    document.getElementById("member-form-title").innerText = "Thêm thành viên mới";
+    
+    const icon = document.getElementById("btn-submit-member-icon");
+    icon.className = "fa-solid fa-user-plus";
+    
+    document.getElementById("btn-submit-member-text").innerText = "Thêm thành viên";
+    document.getElementById("btn-cancel-member-edit").style.display = "none";
+}
+
 function handleAddMemberSubmit(e) {
     e.preventDefault();
 
+    const id = document.getElementById("member-id").value;
     const name = document.getElementById("member-name").value.trim();
     const role = document.getElementById("member-role").value.trim();
     const initials = document.getElementById("member-initials").value.trim().toUpperCase();
 
     if (name && role && initials) {
-        const newMember = {
-            id: "mem-" + Date.now(),
-            name,
-            role,
-            avatar: initials
-        };
-
-        state.members.push(newMember);
-        saveState("members");
+        if (id) {
+            // Cập nhật thành viên hiện tại
+            const index = state.members.findIndex(m => m.id === id);
+            if (index !== -1) {
+                state.members[index] = {
+                    ...state.members[index],
+                    name,
+                    role,
+                    avatar: initials
+                };
+                saveState("members");
+            }
+        } else {
+            // Thêm thành viên mới
+            const newMember = {
+                id: "mem-" + Date.now(),
+                name,
+                role,
+                avatar: initials
+            };
+            state.members.push(newMember);
+            saveState("members");
+        }
         
-        // Reset form
-        document.getElementById("form-add-member").reset();
-        
-        // Re-render
+        cancelMemberEdit(); // reset form và đưa về chế độ Thêm mới
         populateSelectDropdowns();
         renderAll();
     }

@@ -1,116 +1,113 @@
-// Dữ liệu mẫu khởi tạo cho hệ thống quản lý phân chia giao việc
+// Dữ liệu mẫu khởi tạo cho hệ thống quản lý phân chia giao việc - Phòng Kỹ thuật & Sự kiện Giáo dục
 
 const DEFAULT_MEMBERS = [
-    { id: "mem-1", name: "Nguyễn Văn An", role: "Trưởng nhóm Kỹ thuật", avatar: "AN" },
-    { id: "mem-2", name: "Trần Thị Bình", role: "Kỹ thuật viên Mạng", avatar: "TB" },
-    { id: "mem-3", name: "Lê Hoàng Nam", role: "Hỗ trợ Phần mềm", avatar: "HN" },
-    { id: "mem-4", name: "Phạm Minh Thư", role: "Quản trị Hệ thống", avatar: "MT" }
+    { id: "mem-1", name: "Nguyễn Văn An", role: "Trưởng phòng Kỹ thuật & Sự kiện", avatar: "AN" },
+    { id: "mem-2", name: "Trần Thị Bình", role: "Chuyên viên Âm thanh - Ánh sáng", avatar: "TB" },
+    { id: "mem-3", name: "Lê Hoàng Nam", role: "Kỹ thuật viên Thiết bị & Lớp học", avatar: "HN" },
+    { id: "mem-4", name: "Phạm Minh Thư", role: "Chuyên viên Hệ thống & Livestream", avatar: "MT" }
 ];
 
 const DEFAULT_GUIDELINES = [
     {
         id: "guide-1",
-        title: "Quy trình cài đặt hệ điều hành và phần mềm cơ bản",
+        title: "Quy trình lắp đặt thiết bị CNTT và máy chiếu phòng học",
         type: "technical",
-        summary: "Hướng dẫn chuẩn bị và cài đặt Windows/Linux kèm các công cụ văn phòng.",
-        content: `### Quy trình chuẩn bị và cài đặt hệ thống:
-1. **Chuẩn bị USB Boot**:
-   - Sử dụng công cụ Rufus tạo USB cài đặt (sử dụng chuẩn UEFI - GPT).
-   - Tải file ISO Windows 10/11 hoặc Ubuntu bản LTS mới nhất.
-2. **Quá trình cài đặt**:
-   - Cắm USB vào máy, khởi động và nhấn phím Boot Menu (F12, F8 hoặc Del tùy dòng máy).
-   - Chọn phân vùng cài đặt, xóa sạch các phân vùng cũ của ổ đĩa C hệ thống cũ.
-   - Tiến hành cài đặt và làm theo chỉ dẫn trên màn hình.
-3. **Cài đặt phần mềm cơ bản**:
-   - Bộ Office (Word, Excel, PowerPoint) hoặc LibreOffice.
-   - Trình duyệt Chrome, Edge, Unikey (bộ gõ tiếng Việt).
-   - Phần mềm nén/giải nén WinRAR hoặc 7-Zip.
-   - Cài đặt phần mềm điều khiển từ xa: UltraViewer / RustDesk.`,
+        summary: "Các bước chuẩn bị, kết nối máy chiếu, âm thanh mic giảng dạy tại phòng học giáo dục.",
+        content: `### Quy trình chuẩn bị phòng học giảng dạy trực tiếp:
+1. **Kiểm tra thiết bị hiển thị**:
+   - Bật máy chiếu (Projector) hoặc màn hình tương tác thông minh.
+   - Kiểm tra cổng cáp kết nối (HDMI, VGA, Type-C) tại bàn giáo viên, đảm bảo truyền hình ảnh và âm thanh rõ nét.
+2. **Kiểm tra âm thanh giảng đường**:
+   - Bật cục đẩy (amply) và Mixer của phòng học.
+   - Kiểm tra micro không dây (hoặc micro cài áo), sạc sẵn pin và đặt trên bàn giảng viên.
+   - Thử nói vào micro xem tiếng loa phòng học có trong, vang và không bị rè hay hú hay không.
+3. **Cài đặt phần mềm giảng dạy**:
+   - Bật máy tính của phòng học (nếu có) hoặc hỗ trợ giáo viên kết nối Laptop cá nhân.
+   - Đảm bảo kết nối mạng LAN hoặc Wifi hoạt động ổn định.
+   - Mở sẵn phần mềm Office, trình duyệt web hoặc các công cụ dạy học bổ trợ.`,
         checklist: [
-            "Chuẩn bị USB Boot chứa bộ cài sạch",
-            "Sao lưu dữ liệu cũ của khách hàng trước khi cài đặt",
-            "Cài đặt hệ điều hành và cập nhật Driver mới nhất",
-            "Cài đặt phần mềm văn phòng và Unikey",
-            "Cài đặt phần mềm UltraViewer hỗ trợ từ xa",
-            "Bàn giao máy và hướng dẫn khách hàng kiểm tra lại"
+            "Kiểm tra máy chiếu và cáp tín hiệu HDMI/VGA tại bàn giáo viên",
+            "Bật hệ thống âm thanh và kiểm tra loa phòng học",
+            "Kiểm tra dung lượng pin và sạc micro không dây cho giảng viên",
+            "Bật máy tính giảng đường và kiểm tra kết nối mạng Wifi/LAN",
+            "Thử mở phần mềm trình chiếu PowerPoint/PDF kiểm tra hiển thị",
+            "Bàn giao lớp học và hướng dẫn nhanh cho giáo viên nếu cần"
         ]
     },
     {
         id: "guide-2",
-        title: "Quy trình xử lý sự cố mất kết nối mạng LAN/Internet",
-        type: "technical",
-        summary: "Các bước kiểm tra nhanh và khắc phục lỗi kết nối mạng tại văn phòng.",
-        content: `### Các bước kiểm tra lỗi kết nối mạng:
-1. **Kiểm tra vật lý**:
-   - Xem cáp mạng LAN đã cắm chắc chắn chưa, đèn cổng mạng có sáng/nhấp nháy không.
-   - Kiểm tra modem, switch trung gian xem có mất điện hoặc đèn báo đỏ không.
-2. **Kiểm tra cấu hình IP**:
-   - Mở CMD chạy lệnh: \`ipconfig /all\`.
-   - Xem máy có nhận đúng dải IP của cơ quan không (ví dụ: \`192.168.1.x\`).
-   - Nếu nhận IP dạng \`169.254.x.x\`, nghĩa là lỗi DHCP cấp phát. Chạy \`ipconfig /release\` và \`ipconfig /renew\`.
-3. **Kiểm tra kết nối gateway và DNS**:
-   - Ping địa chỉ Gateway (ví dụ \`ping 192.168.1.1\`).
-   - Ping DNS Google (\`ping 8.8.8.8\`) để xem có kết nối ra Internet chưa.
-   - Ping tên miền (\`ping google.com\`) để kiểm tra phân giải DNS. Nếu ping IP được mà không ping tên miền được, cần set DNS thủ công sang \`8.8.8.8\` và \`8.8.4.4\`.`,
+        title: "Quy trình thiết lập và vận hành livestream hội thảo giáo dục",
+        type: "collective",
+        summary: "Hướng dẫn cài đặt OBS Studio, kết nối camera và luồng livestream trên Zoom/Youtube.",
+        content: `### Các bước cấu hình livestream sự kiện trực tuyến:
+1. **Kết nối phần cứng**:
+   - Lắp đặt máy quay/camera sự kiện lên chân tripod, kết nối vào máy tính thông qua thiết bị Capture Card (USB HDMI Capture).
+   - Lấy tín hiệu âm thanh sạch (Line-out) từ bàn Mixer sự kiện cắm vào đường Mic-in/Line-in của máy tính phát stream.
+2. **Thiết lập OBS Studio**:
+   - Tạo các Cảnh (Scenes) bao gồm: Cảnh chờ (Banner), Cảnh máy quay chính, Cảnh máy quay phụ, Cảnh trình chiếu Slide giáo án.
+   - Điều chỉnh mức âm thanh (Audio Mixer) đảm bảo giọng nói người phát biểu đạt mức xanh-vàng, không bị vượt ngưỡng đỏ gây rè.
+3. **Thiết lập luồng phát và giám sát**:
+   - Lấy Khóa luồng (Stream Key) từ Youtube Live, Facebook Live hoặc Zoom Webinar dán vào cấu hình Stream trong OBS.
+   - Bắt đầu phát luồng thử nghiệm (ở chế độ riêng tư) để đánh giá đường truyền mạng và độ trễ.
+   - Khi sự kiện bắt đầu, kích hoạt phát chính thức và luôn có 1 kỹ thuật viên theo dõi chat, tương tác hỗ trợ học viên từ xa.`,
         checklist: [
-            "Kiểm tra kết nối vật lý (cáp mạng, đèn tín hiệu)",
-            "Kiểm tra địa chỉ IP trên máy tính bằng CMD (ipconfig)",
-            "Ping thử IP Gateway/Router xem có kết nối nội bộ không",
-            "Ping thử DNS 8.8.8.8 để kiểm tra mạng ngoài",
-            "Kiểm tra cấu hình DNS thủ công nếu cần thiết",
-            "Khởi động lại Switch/Router nhánh nếu lỗi diện rộng"
+            "Kết nối máy quay camera sự kiện thông qua capture card vào máy tính",
+            "Cắm dây lấy âm thanh line-out từ Mixer vào máy tính livestream",
+            "Thiết lập các scene trên OBS Studio (chờ, slide, camera giảng viên)",
+            "Lấy Stream Key và cấu hình luồng phát lên nền tảng (Zoom/Youtube)",
+            "Chạy thử livestream thử nghiệm để test độ trễ mạng và âm lượng mic",
+            "Tiến hành phát chính thức và phân công trực kỹ thuật trong suốt sự kiện"
         ]
     },
     {
         id: "guide-3",
-        title: "Quy trình vệ sinh, bảo trì định kỳ phòng máy chủ",
+        title: "Quy trình lắp đặt hệ thống Âm thanh & Ánh sáng sự kiện tại Hội trường",
         type: "collective",
-        summary: "Quy trình tập thể hàng tháng để đảm bảo phòng Server luôn sạch sẽ, an toàn.",
-        content: `### Quy định vệ sinh và kiểm tra an toàn:
-1. **An toàn lao động**:
-   - Tuyệt đối không mang chất lỏng, đồ ăn vào phòng Server.
-   - Khi vệ sinh thiết bị điện, phải sử dụng chổi quét bụi tĩnh điện hoặc bình xịt khí nén.
-2. **Các công việc cần làm**:
-   - Quét dọn, lau sàn phòng server (sử dụng khăn ẩm vừa phải, không được để nước đọng).
-   - Vệ sinh bụi bẩn màng lọc khí của điều hòa phòng server.
-   - Lau bụi bên ngoài tủ Rack.
-   - Sắp xếp lại dây cáp mạng thừa, thu gom rác thải, hộp giấy không dùng đến.
-3. **Ghi chép log**:
-   - Đo nhiệt độ phòng server (giới hạn từ 18°C đến 22°C).
-   - Kiểm tra các đèn báo trạng thái của UPS và server, ghi nhận nếu có cảnh báo lỗi đỏ.`,
+        summary: "Các bước phối hợp lắp đặt loa hội trường, micro sự kiện và đèn chiếu sáng sân khấu.",
+        content: `### Các bước lắp đặt phần cứng kỹ thuật cho sự kiện giáo dục:
+1. **Thiết lập âm thanh**:
+   - Bố trí 2 loa cột chính (Main Speaker) hai bên sân khấu hướng về phía khán giả, và các loa kiểm âm (Monitor) hướng về phía bục phát biểu.
+   - Đi dây cáp loa gọn gàng, dán băng keo cố định trên sàn để tránh người qua lại vấp ngã.
+   - Kết nối micro bục phát biểu, micro cầm tay của MC và đại biểu vào bàn Mixer.
+2. **Thiết lập ánh sáng sân khấu**:
+   - Lắp đặt các đèn Par LED chiếu sáng ấm bục phát biểu và đèn màu tạo hiệu ứng phông nền sân khấu.
+   - Cắm điện kiểm tra cường độ sáng, căn chỉnh góc chiếu tránh rọi thẳng vào mắt người đứng trên bục.
+3. **Sound check & Cân chỉnh**:
+   - Phát nhạc nền kiểm tra sự cân bằng âm thanh giữa loa trái và loa phải.
+   - Thử giọng micro của MC và các đại diện phát biểu để điều chỉnh EQ âm sắc, căn chỉnh chống hú (Anti-Feedback).`,
         checklist: [
-            "Tập trung nhân sự và chuẩn bị dụng cụ vệ sinh chuyên dụng",
-            "Lau bụi bên ngoài và xung quanh các tủ rack",
-            "Vệ sinh màng lọc và kiểm tra nhiệt độ điều hòa (đạt 18-22°C)",
-            "Sắp xếp gọn gàng dây patch cord và dây nguồn",
-            "Kiểm tra trạng thái pin dự phòng UPS và thiết bị phòng cháy chữa cháy",
-            "Ghi sổ nhật ký bảo trì phòng Server"
+            "Khảo sát sơ đồ bố trí sân khấu hội trường và vị trí đặt loa",
+            "Lắp đặt, kết nối dây loa chính và loa monitor kiểm âm sân khấu",
+            "Kết nối micro bục phát biểu và micro không dây cầm tay vào Mixer",
+            "Lắp đặt hệ thống đèn LED chiếu sáng bục sân khấu và phông nền",
+            "Phát thử nhạc nền và sound check micro đại biểu trước giờ G",
+            "Đi dây cáp an toàn, dán băng keo cố định đường đi"
         ]
     },
     {
         id: "guide-4",
-        title: "Quy trình chuẩn bị phòng họp cho hội nghị trực tuyến",
-        type: "collective",
-        summary: "Hướng dẫn phối hợp chuẩn bị thiết bị âm thanh, hình ảnh trước giờ họp.",
-        content: `### Các bước chuẩn bị cuộc họp trực tuyến:
-1. **Kiểm tra thiết bị**:
-   - Bật máy tính phòng họp, khởi động màn hình tivi lớn hoặc máy chiếu.
-   - Bật camera hội nghị, loa mic chuyên dụng Jabra/Polycom.
-2. **Kiểm tra kết nối cuộc họp**:
-   - Mở ứng dụng Zoom/Teams/Google Meet trước 30 phút.
-   - Đăng nhập tài khoản bản quyền của công ty.
-   - Tham gia vào đường link cuộc họp, kiểm tra góc quay của Camera, chất lượng âm thanh (Test Mic & Speaker).
-3. **Phối hợp hỗ trợ**:
-   - In ấn tài liệu cuộc họp nếu có yêu cầu.
-   - Sắp xếp nước uống, bút viết tại bàn họp.
-   - Trực hỗ trợ kỹ thuật trong suốt 15 phút đầu cuộc họp để xử lý lỗi phát sinh lập tức.`,
+        title: "Quy trình cấp phát tài khoản LMS và phòng học Zoom cho khóa học mới",
+        type: "technical",
+        summary: "Quy trình cấp phát tài khoản học trực tuyến, tạo lớp Zoom và gửi thông tin tự động cho học viên.",
+        content: `### Quy trình xử lý yêu cầu đào tạo trực tuyến:
+1. **Tiếp nhận thông tin khóa học**:
+   - Nhận danh sách học viên đăng ký mới, thông tin lịch học và giáo viên phụ trách từ bộ phận Đào tạo.
+2. **Cấu hình trên hệ thống quản lý học tập LMS**:
+   - Đăng nhập quyền Admin hệ thống LMS, import danh sách học viên bằng file Excel.
+   - Tạo khóa học mới, gán giáo viên phụ trách và add học viên vào lớp học tương ứng.
+3. **Tạo lớp học trực tuyến Zoom**:
+   - Tạo lịch họp định kỳ (Recurring Meeting) trên Zoom theo đúng thời khóa biểu.
+   - Thiết lập các chế độ an toàn: Bật phòng chờ (Waiting Room), tắt mic tự động khi vào phòng, thiết lập passcode lớp học.
+   - Gán quyền Co-host/Host cho email của giáo viên giảng dạy.
+4. **Gửi thông báo**:
+   - Soạn thảo và kích hoạt gửi email tự động cung cấp tài khoản LMS, mật khẩu và link học Zoom kèm hướng dẫn truy cập cho học viên.`,
         checklist: [
-            "Bật hệ thống máy chiếu/Tivi và máy tính phòng họp",
-            "Kết nối và kiểm tra loa, micro hội nghị, camera",
-            "Mở phòng họp Zoom/Teams trước 30 phút để test đường truyền",
-            "Kiểm tra hình ảnh hiển thị rõ nét, âm thanh không bị vang/rè",
-            "Bố trí tài liệu, nước uống cho đại biểu",
-            "Cử 1 kỹ thuật viên trực hỗ trợ đầu giờ họp"
+            "Tiếp nhận danh sách lớp và học viên từ phòng Đào tạo",
+            "Import danh sách học viên và gán khóa học trên hệ thống LMS",
+            "Tạo lịch phòng Zoom lớp học định kỳ và thiết lập an toàn bảo mật",
+            "Phân quyền Co-host phòng Zoom cho giáo viên giảng dạy lớp",
+            "Gửi email tự động thông báo tài khoản và link phòng học cho học viên",
+            "Kiểm tra truy cập thử nghiệm tài khoản mẫu đảm bảo hệ thống trơn tru"
         ]
     }
 ];
@@ -118,77 +115,78 @@ const DEFAULT_GUIDELINES = [
 const DEFAULT_TASKS = [
     {
         id: "task-1",
-        title: "Cài đặt máy tính mới cho nhân viên Phòng Nhân sự",
-        description: "Thiết lập máy PC đồng bộ mới mua cho nhân viên mới của phòng Nhân sự. Sử dụng hướng dẫn cài đặt hệ điều hành chuẩn.",
+        title: "Chuẩn bị thiết bị và máy chiếu cho phòng học 302 khóa học mới",
+        description: "Lớp học IELTS Premium mới bắt đầu lúc 18:00 tối nay. Cần chuẩn bị sẵn máy chiếu, sạc pin micro không dây và kiểm tra âm thanh phòng học 302.",
         type: "technical",
         assignedTo: "mem-3",
-        priority: "medium",
+        priority: "high",
         status: "todo",
-        dueDate: "2026-07-05",
+        dueDate: "2026-07-02",
         guidelineId: "guide-1",
         checklist: [
-            { text: "Chuẩn bị USB Boot chứa bộ cài sạch", completed: false },
-            { text: "Sao lưu dữ liệu cũ của khách hàng trước khi cài đặt", completed: true },
-            { text: "Cài đặt hệ điều hành và cập nhật Driver mới nhất", completed: false },
-            { text: "Cài đặt phần mềm văn phòng và Unikey", completed: false },
-            { text: "Cài đặt phần mềm UltraViewer hỗ trợ từ xa", completed: false },
-            { text: "Bàn giao máy và hướng dẫn khách hàng kiểm tra lại", completed: false }
+            { text: "Kiểm tra máy chiếu và cáp tín hiệu HDMI/VGA tại bàn giáo viên", completed: true },
+            { text: "Bật hệ thống âm thanh và kiểm tra loa phòng học", completed: false },
+            { text: "Kiểm tra dung lượng pin và sạc micro không dây cho giảng viên", completed: true },
+            { text: "Bật máy tính giảng đường và kiểm tra kết nối mạng Wifi/LAN", completed: false },
+            { text: "Thử mở phần mềm trình chiếu PowerPoint/PDF kiểm tra hiển thị", completed: false },
+            { text: "Bàn giao lớp học và hướng dẫn nhanh cho giáo viên nếu cần", completed: false }
         ]
     },
     {
         id: "task-2",
-        title: "Khắc phục lỗi mất kết nối máy in mạng tại phòng Kế toán",
-        description: "Phòng kế toán báo lỗi không in được hóa đơn, máy báo offline. Cần sang kiểm tra kết nối mạng LAN của máy in và cài lại Driver IP tĩnh nếu cần.",
+        title: "Cấp phát tài khoản LMS và Zoom cho khóa IELTS Intensive Tháng 7",
+        description: "Khóa học trực tuyến IELTS Intensive sẽ khai giảng vào ngày 05/07. Cần cấp tài khoản cho 25 học viên mới và gửi email thông báo trước ngày 04/07.",
         type: "technical",
-        assignedTo: "mem-2",
-        priority: "high",
+        assignedTo: "mem-4",
+        priority: "medium",
         status: "in-progress",
-        dueDate: "2026-07-02",
-        guidelineId: "guide-2",
+        dueDate: "2026-07-04",
+        guidelineId: "guide-4",
         checklist: [
-            { text: "Kiểm tra kết nối vật lý (cáp mạng, đèn tín hiệu máy in)", completed: true },
-            { text: "Kiểm tra IP máy in xem có bị trùng hoặc đổi IP không", completed: true },
-            { text: "Ping thử IP máy in từ máy kế toán xem thông suốt không", completed: false },
-            { text: "Cấu hình lại cổng Port IP tĩnh trên máy tính kế toán", completed: false },
-            { text: "In test thử nghiệm và bàn giao", completed: false }
+            { text: "Tiếp nhận danh sách lớp và học viên từ phòng Đào tạo", completed: true },
+            { text: "Import danh sách học viên và gán khóa học trên hệ thống LMS", completed: true },
+            { text: "Tạo lịch phòng Zoom lớp học định kỳ và thiết lập an toàn bảo mật", completed: false },
+            { text: "Phân quyền Co-host phòng Zoom cho giáo viên giảng dạy lớp", completed: false },
+            { text: "Gửi email tự động thông báo tài khoản và link phòng học cho học viên", completed: false },
+            { text: "Kiểm tra truy cập thử nghiệm tài khoản mẫu đảm bảo hệ thống trơn tru", completed: false }
         ]
     },
     {
         id: "task-3",
-        title: "Tổng vệ sinh phòng Server định kỳ tháng 7",
-        description: "Hoạt động tập thể cả nhóm kỹ thuật phối hợp dọn dẹp, hút bụi phòng server, sắp xếp cáp mạng và bảo trì điều hòa.",
+        title: "Setup âm thanh, ánh sáng và livestream cho Hội thảo Tuyển sinh ngày 05/07",
+        description: "Sự kiện tuyển sinh quy mô lớn của công ty giáo dục diễn ra tại Hội trường chính lúc 08:30 ngày 05/07. Cần setup hệ thống âm thanh, ánh sáng sân khấu và chuẩn bị thiết bị phát livestream lên Youtube.",
         type: "collective",
         assignedTo: "mem-1",
         priority: "high",
         status: "todo",
-        dueDate: "2026-07-10",
+        dueDate: "2026-07-05",
         guidelineId: "guide-3",
         checklist: [
-            { text: "Tập trung nhân sự và chuẩn bị dụng cụ vệ sinh chuyên dụng", completed: false },
-            { text: "Lau bụi bên ngoài và xung quanh các tủ rack", completed: false },
-            { text: "Vệ sinh màng lọc và kiểm tra nhiệt độ điều hòa (đạt 18-22°C)", completed: false },
-            { text: "Sắp xếp gọn gàng dây patch cord và dây nguồn", completed: false },
-            { text: "Kiểm tra trạng thái pin dự phòng UPS và thiết bị phòng cháy chữa cháy", completed: false },
-            { text: "Ghi sổ nhật ký bảo trì phòng Server", completed: false }
+            { text: "Khảo sát sơ đồ bố trí sân khấu hội trường và vị trí đặt loa", completed: false },
+            { text: "Lắp đặt, kết nối dây loa chính và loa monitor kiểm âm sân khấu", completed: false },
+            { text: "Kết nối micro bục phát biểu và micro không dây cầm tay vào Mixer", completed: false },
+            { text: "Lắp đặt hệ thống đèn LED chiếu sáng bục sân khấu và phông nền", completed: false },
+            { text: "Phát thử nhạc nền và sound check micro đại biểu trước giờ G", completed: false },
+            { text: "Đi dây cáp an toàn, dán băng keo cố định đường đi", completed: false }
         ]
     },
     {
         id: "task-4",
-        title: "Chuẩn bị phòng họp trực tuyến Hội nghị Sơ kết 6 tháng đầu năm",
-        description: "Yêu cầu phối hợp kết nối Zoom với đầu cầu chi nhánh phía Nam. Họp chính thức bắt đầu lúc 14:00 ngày 03/07/2026.",
+        title: "Vận hành Livestream Lễ Khai giảng Khóa học hè 2026",
+        description: "Bộ phận Đào tạo yêu cầu phát trực tiếp Lễ Khai giảng lên Fanpage công ty. Bắt đầu truyền hình trực tiếp lúc 09:00 ngày 03/07/2026.",
         type: "collective",
-        assignedTo: "mem-4",
+        assignedTo: "mem-2",
         priority: "high",
         status: "in-progress",
         dueDate: "2026-07-03",
-        guidelineId: "guide-4",
+        guidelineId: "guide-2",
         checklist: [
-            { text: "Bật hệ thống máy chiếu/Tivi và máy tính phòng họp", completed: true },
-            { text: "Kết nối và kiểm tra loa, micro hội nghị, camera", completed: true },
-            { text: "Mở phòng họp Zoom/Teams trước 30 phút để test đường truyền", completed: false },
-            { text: "Kiểm tra hình ảnh hiển thị rõ nét, âm thanh không bị vang/rè", completed: false },
-            { text: "Bố trí tài liệu, nước uống cho đại biểu", completed: false },
-            { text: "Cử 1 kỹ thuật viên trực hỗ trợ đầu giờ họp", completed: false }
+            { text: "Kết nối máy quay camera sự kiện thông qua capture card vào máy tính", completed: true },
+            { text: "Cắm dây lấy âm thanh line-out từ Mixer vào máy tính livestream", completed: true },
+            { text: "Thiết lập các scene trên OBS Studio (chờ, slide, camera giảng viên)", completed: true },
+            { text: "Lấy Stream Key và cấu hình luồng phát lên nền tảng (Zoom/Youtube)", completed: false },
+            { text: "Chạy thử livestream thử nghiệm để test độ trễ mạng và âm lượng mic", completed: false },
+            { text: "Tiến hành phát chính thức và phân công trực kỹ thuật trong suốt sự kiện", completed: false }
         ]
     }
 ];
