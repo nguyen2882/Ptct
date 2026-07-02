@@ -1338,3 +1338,29 @@ header {
         grid-template-columns: 1fr;
     }
 }
+
+/* Suggestion Chips Style */
+.suggestion-chip {
+    display: inline-block;
+    padding: 6px 12px;
+    background-color: var(--bg-tertiary);
+    border: 1px solid var(--border-glass);
+    color: var(--text-secondary);
+    border-radius: var(--radius-full);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition);
+    user-select: none;
+}
+
+.suggestion-chip:hover {
+    background-color: var(--color-primary-light);
+    color: var(--color-primary);
+    border-color: rgba(99, 102, 241, 0.3);
+    transform: translateY(-1px);
+}
+
+.suggestion-chip:active {
+    transform: translateY(0);
+}

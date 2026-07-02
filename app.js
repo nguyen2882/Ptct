@@ -433,6 +433,9 @@ function setupEventListeners() {
     document.getElementById("btn-close-task-modal").addEventListener("click", closeTaskModal);
     document.getElementById("btn-cancel-task-modal").addEventListener("click", closeTaskModal);
     document.getElementById("form-task").addEventListener("submit", handleTaskFormSubmit);
+    document.getElementById("task-type").addEventListener("change", (e) => {
+        renderTaskSuggestions(e.target.value);
+    });
     document.getElementById("btn-add-checklist-item").addEventListener("click", () => addChecklistItemInput());
 
     // Modal Task Detail
@@ -515,6 +518,129 @@ function populateSelectDropdowns() {
     });
 }
 
+const TASK_SUGGESTIONS = {
+    company_tech: [
+        {
+            title: "Cài đặt máy tính phòng Ban/Phòng học mới",
+            desc: "Thực hiện lắp đặt phần cứng, cài đặt hệ điều hành Windows sạch, driver và phần mềm hỗ trợ văn phòng cơ bản cho phòng ban hoặc lớp học mới yêu cầu.",
+            checklist: [
+                "Chuẩn bị máy tính và phụ kiện (chuột, bàn phím, dây nguồn)",
+                "Cài đặt hệ điều hành và cập nhật driver mới nhất",
+                "Cài đặt phần mềm văn phòng, bộ gõ Unikey và trình duyệt",
+                "Kết nối máy in mạng phòng ban (nếu có)",
+                "Bàn giao và ghi nhận sổ tay bàn giao thiết bị"
+            ]
+        },
+        {
+            title: "Khắc phục sự cố mạng LAN & Wifi văn phòng",
+            desc: "Kiểm tra và xử lý lỗi kết nối mạng internet hoặc mạng nội bộ tại các phòng làm việc của công ty.",
+            checklist: [
+                "Kiểm tra kết nối vật lý và đèn tín hiệu cổng mạng",
+                "Chạy lệnh ipconfig kiểm tra IP và DHCP cấp phát",
+                "Ping Gateway và DNS 8.8.8.8 kiểm tra kết nối ra ngoài",
+                "Cấu hình lại IP tĩnh/động hoặc đổi DNS nếu cần",
+                "Kiểm tra tốc độ mạng thực tế và bàn giao kết quả"
+            ]
+        },
+        {
+            title: "Cấp phát tài khoản học tập LMS & Zoom lớp mới",
+            desc: "Tạo tài khoản học viên lớp mới trên hệ thống LMS học tập của công ty và lập lịch phòng học Zoom định kỳ.",
+            checklist: [
+                "Nhận danh sách lớp và học viên từ phòng Đào tạo",
+                "Import danh sách học viên lên hệ thống LMS",
+                "Tạo phòng học Zoom, cấu hình passcode và phòng chờ",
+                "Phân quyền Co-host phòng Zoom cho giáo viên lớp",
+                "Gửi email tự động thông báo tài khoản và link Zoom cho học viên"
+            ]
+        },
+        {
+            title: "Bảo trì & Vệ sinh bụi máy tính giảng đường định kỳ",
+            desc: "Vệ sinh thổi bụi thùng máy, lau màn hình và kiểm tra chuột phím của các máy tính phòng học giảng dạy.",
+            checklist: [
+                "Chuẩn bị bình xịt khí nén, cọ quét bụi tĩnh điện và khăn lau",
+                "Tắt nguồn máy tính và rút các dây kết nối",
+                "Tháo nắp thùng máy, xịt bụi quạt chip và card màn hình",
+                "Lau màn hình máy tính và bàn phím chuột bằng dung dịch chuyên dụng",
+                "Cắm dây khởi động lại máy, test cổng USB hoạt động tốt"
+            ]
+        }
+    ],
+    event_tech: [
+        {
+            title: "Setup Âm thanh & Ánh sáng sự kiện tại Hội trường",
+            desc: "Lắp đặt loa hội trường, bố trí microphone bục phát biểu và cấu hình hệ thống đèn LED phông nền sân khấu sự kiện.",
+            checklist: [
+                "Xem sơ đồ thiết kế vị trí đặt loa và đèn sự kiện",
+                "Kết nối và đi dây loa chính, loa monitor sân khấu gọn gàng",
+                "Kết nối micro không dây cầm tay và mic bục phát biểu vào Mixer",
+                "Lắp đặt và điều chỉnh góc chiếu đèn LED rọi bục",
+                "Sound check chạy thử nhạc nền, sound check micro đại biểu trước sự kiện"
+            ]
+        },
+        {
+            title: "Vận hành thiết bị Livestream Hội thảo tuyển sinh",
+            desc: "Thiết lập OBS Studio trên máy tính, kết nối máy quay và luồng âm thanh Mixer để phát trực tiếp buổi hội thảo lên Youtube/Fanpage.",
+            checklist: [
+                "Lắp đặt camera sự kiện lên tripod và kết nối capture card vào PC",
+                "Kết nối lấy âm thanh sạch Line-out từ Mixer vào PC phát stream",
+                "Mở OBS, cấu hình các Cảnh (Cảnh chờ, Slide trình chiếu, Diễn giả)",
+                "Lấy Stream Key và kết nối luồng phát với Youtube/Zoom webinar",
+                "Chạy thử livestream thử nghiệm để test chất lượng đường truyền mạng"
+            ]
+        },
+        {
+            title: "Kiểm tra & Bảo trì micro không dây các phòng họp",
+            desc: "Tiến hành đo sóng thu phát, kiểm tra tình trạng pin và vệ sinh lưới lọc của các bộ micro không dây tại phòng họp.",
+            checklist: [
+                "Thu gom các tay micro không dây về phòng kỹ thuật",
+                "Kiểm tra khả năng bắt sóng xa gần của bộ thu phát",
+                "Kiểm tra khoang pin và thay pin mới nếu pin yếu dưới 30%",
+                "Lau bụi bẩn, vệ sinh lưới lọc đầu mic tránh ẩm mốc",
+                "Lắp đặt lại vị trí cũ và test thử chất lượng âm thanh"
+            ]
+        },
+        {
+            title: "Setup kỹ thuật cho Lễ tốt nghiệp / Khai giảng khóa học",
+            desc: "Phối hợp các bộ phận chạy thử kịch bản kỹ thuật âm thanh, trình chiếu máy chiếu và nhạc nghi thức cho Lễ tốt nghiệp.",
+            checklist: [
+                "Lắp đặt máy chiếu lớn hiển thị slide danh sách học viên tốt nghiệp",
+                "Kiểm tra và chuẩn bị sẵn file nhạc nghi thức (nhạc chào cờ, trao bằng)",
+                "Phát micro không dây cho MC và đại diện học viên",
+                "Lắp máy quay chụp hình tại góc chính giữa hội trường",
+                "Chạy thử kịch bản (khớp nhạc và slide) cùng với MC"
+            ]
+        }
+    ]
+};
+
+function renderTaskSuggestions(dept) {
+    const chipsContainer = document.getElementById("task-suggestions-chips");
+    if (!chipsContainer) return;
+    
+    chipsContainer.innerHTML = "";
+    
+    const suggestions = TASK_SUGGESTIONS[dept] || [];
+    suggestions.forEach(sug => {
+        const chip = document.createElement("div");
+        chip.className = "suggestion-chip";
+        chip.innerText = sug.title;
+        chip.addEventListener("click", () => {
+            document.getElementById("task-title").value = sug.title;
+            document.getElementById("task-desc").value = sug.desc;
+            
+            // Render checklist
+            const checklistContainer = document.getElementById("modal-checklist-container");
+            checklistContainer.innerHTML = "";
+            if (sug.checklist && sug.checklist.length > 0) {
+                sug.checklist.forEach(step => {
+                    addChecklistItemInput(step);
+                });
+            }
+        });
+        chipsContainer.appendChild(chip);
+    });
+}
+
 // ----------------- 6. XỬ LÝ BIỂU MẪU CÔNG VIỆC (TASK MODAL) -----------------
 function openTaskModal(taskId = null) {
     const modal = document.getElementById("modal-task");
@@ -533,6 +659,7 @@ function openTaskModal(taskId = null) {
     if (taskId) {
         // Chế độ chỉnh sửa (Edit Mode)
         modalTitle.innerText = "Chỉnh sửa công việc";
+        document.getElementById("task-suggestions-group").style.display = "none"; // ẩn gợi ý khi sửa
         const task = state.tasks.find(t => t.id === taskId);
         if (task) {
             document.getElementById("task-id").value = task.id;
@@ -555,9 +682,14 @@ function openTaskModal(taskId = null) {
         // Chế độ tạo mới (Create Mode)
         modalTitle.innerText = "Giao việc mới";
         document.getElementById("task-id").value = "";
+        document.getElementById("task-suggestions-group").style.display = "block"; // hiển thị gợi ý
         
         // Thêm sẵn 1 ô nhập checklist trống
         addChecklistItemInput();
+        
+        // Nạp các chip gợi ý cho phòng ban mặc định đang được chọn
+        const defaultDept = document.getElementById("task-type").value;
+        renderTaskSuggestions(defaultDept);
     }
     
     modal.classList.add("active");
