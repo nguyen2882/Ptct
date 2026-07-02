@@ -6,7 +6,7 @@ let state = {
     tasks: [],
     members: [],
     guidelines: [],
-    theme: "dark",
+    theme: "light",
     activePage: "dashboard",
     filters: {
         search: "",
@@ -19,7 +19,7 @@ let state = {
 // Khởi tạo và tải dữ liệu từ localStorage
 function initApp() {
     // 0. Kiểm tra phiên bản dữ liệu (để tự động chuyển giao sang bộ dữ liệu giáo dục/sự kiện)
-    const DB_VERSION = "3.0";
+    const DB_VERSION = "4.0";
     const savedVersion = localStorage.getItem("itflow_db_version");
     if (savedVersion !== DB_VERSION) {
         localStorage.removeItem("itflow_tasks");
