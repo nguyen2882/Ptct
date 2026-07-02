@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ thống Quản lý Phân việc & Quy trình Kỹ thuật | IT-Flow</title>
+    <meta name="description" content="Ứng dụng phân chia giao việc, quản lý tiến độ hỗ trợ kỹ thuật và công việc tập thể tối giản, hiệu quả.">
+    <!-- FontAwesome for Premium Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom Style CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Sidebar Navigation -->
+    <aside>
+        <div class="brand">
+            <div class="brand-icon">IT</div>
+            <h1>IT-Flow</h1>
+        </div>
+        
+        <ul class="nav-links">
+            <li class="active" id="nav-dashboard">
+                <a href="#dashboard">
+                    <i class="fa-solid fa-chart-pie"></i>
+                    <span>Bảng điều khiển</span>
+                </a>
+            </li>
+            <li id="nav-board">
+                <a href="#board">
+                    <i class="fa-solid fa-columns"></i>
+                    <span>Bảng phân việc</span>
+                </a>
+            </li>
+            <li id="nav-guidelines">
+                <a href="#guidelines">
+                    <i class="fa-solid fa-book-open"></i>
+                    <span>Hướng dẫn SOP</span>
+                </a>
+            </li>
+            <li id="nav-team">
+                <a href="#team">
+                    <i class="fa-solid fa-users"></i>
+                    <span>Đội ngũ kỹ thuật</span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="sidebar-footer">
+            <button class="btn btn-secondary" id="btn-export-data" style="width: 100%; margin-bottom: 8px; font-size: 12px; padding: 8px 12px;">
+                <i class="fa-solid fa-download"></i> <span>Xuất dữ liệu JSON</span>
+            </button>
+            <button class="btn btn-secondary" id="btn-import-data-trigger" style="width: 100%; margin-bottom: 8px; font-size: 12px; padding: 8px 12px;">
+                <i class="fa-solid fa-upload"></i> <span>Nhập dữ liệu JSON</span>
+            </button>
+            <input type="file" id="file-import-data" accept=".json" style="display: none;">
+            
+            <button class="btn btn-danger" id="btn-reset-db" style="width: 100%; font-size: 12px; padding: 8px 12px; justify-content: center;">
+                <i class="fa-solid fa-rotate-left"></i> <span>Đặt lại dữ liệu</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main>
+        <!-- Top Header -->
+        <header>
+            <div class="header-search">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="global-search" placeholder="Tìm kiếm nhanh công việc, hướng dẫn...">
+            </div>
+            
+            <div class="header-actions">
+                <button class="btn-icon" id="theme-toggle" title="Chuyển chế độ Sáng / Tối">
+                    <i class="fa-solid fa-sun" id="theme-icon-sun" style="display: none;"></i>
+                    <i class="fa-solid fa-moon" id="theme-icon-moon"></i>
+                </button>
+                
+                <div class="user-profile">
+                    <div class="avatar" id="header-user-avatar">AD</div>
+                    <div class="user-info">
+                        <span class="user-name" id="header-user-name">Người quản trị</span>
+                        <span class="user-role">Điều phối kỹ thuật</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- PAGE 1: DASHBOARD -->
+        <section id="page-dashboard" class="page-container active">
+            <div class="page-header">
+                <div class="page-title">
+                    <h2>Bảng điều khiển</h2>
+                    <p>Tổng quan tiến độ công việc và chỉ số hỗ trợ kỹ thuật.</p>
+                </div>
+                <button class="btn btn-primary" id="btn-quick-task">
+                    <i class="fa-solid fa-plus"></i> Giao việc mới
+                </button>
+            </div>
+
+            <!-- Stats Widgets -->
+            <div class="stats-grid">
+                <div class="stat-card total">
+                    <div class="stat-info">
+                        <span class="stat-value" id="stat-total-tasks">0</span>
+                        <span class="stat-label">Tổng số công việc</span>
+                    </div>
+                    <div class="stat-icon-wrapper">
+                        <i class="fa-solid fa-list-check"></i>
+                    </div>
+                </div>
+                <div class="stat-card todo">
+                    <div class="stat-info">
+                        <span class="stat-value" id="stat-todo-tasks">0</span>
+                        <span class="stat-label">Mới giao / Chờ làm</span>
+                    </div>
+                    <div class="stat-icon-wrapper">
+                        <i class="fa-solid fa-circle-plus"></i>
+                    </div>
+                </div>
+                <div class="stat-card in-progress">
+                    <div class="stat-info">
+                        <span class="stat-value" id="stat-progress-tasks">0</span>
+                        <span class="stat-label">Đang thực hiện</span>
+                    </div>
+                    <div class="stat-icon-wrapper">
+                        <i class="fa-solid fa-spinner fa-spin-slow"></i>
+                    </div>
+                </div>
+                <div class="stat-card done">
+                    <div class="stat-info">
+                        <span class="stat-value" id="stat-done-tasks">0</span>
+                        <span class="stat-label">Đã hoàn thành</span>
+                    </div>
+                    <div class="stat-icon-wrapper">
+                        <i class="fa-solid fa-circle-check"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Split Content -->
+            <div class="dashboard-row">
+                <!-- Left Card: High Priority Tasks -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <h3>Việc khẩn cấp cần xử lý (Độ ưu tiên cao)</h3>
+                        </div>
+                        <button class="btn btn-secondary" onclick="document.getElementById('nav-board').click();" style="font-size: 12px; padding: 6px 12px;">
+                            Xem tất cả
+                        </button>
+                    </div>
+                    <div class="column-cards" id="dashboard-urgent-tasks" style="overflow: visible; padding: 0;">
+                        <!-- JS renders urgent cards here -->
+                    </div>
+                </div>
+
+                <!-- Right Card: Categories Progress -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <h3>Tỉ lệ theo phân loại</h3>
+                        </div>
+                    </div>
+                    <div class="progress-list">
+                        <div class="progress-item">
+                            <div class="progress-header">
+                                <span>Hỗ trợ kỹ thuật (Sự cố)</span>
+                                <span id="progress-text-technical">0% (0/0)</span>
+                            </div>
+                            <div class="progress-bar-bg">
+                                <div class="progress-bar-fill technical" id="progress-fill-technical" style="width: 0%;"></div>
+                            </div>
+                        </div>
+                        <div class="progress-item">
+                            <div class="progress-header">
+                                <span>Công việc tập thể</span>
+                                <span id="progress-text-collective">0% (0/0)</span>
+                            </div>
+                            <div class="progress-bar-bg">
+                                <div class="progress-bar-fill collective" id="progress-fill-collective" style="width: 0%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PAGE 2: KANBAN BOARD -->
+        <section id="page-board" class="page-container">
+            <div class="page-header">
+                <div class="page-title">
+                    <h2>Bảng phân việc</h2>
+                    <p>Kéo thả công việc để cập nhật trạng thái nhanh chóng.</p>
+                </div>
+                <button class="btn btn-primary" id="btn-add-task">
+                    <i class="fa-solid fa-plus"></i> Giao việc mới
+                </button>
+            </div>
+
+            <!-- Filters -->
+            <div class="board-filters">
+                <select class="filter-select" id="filter-assignee">
+                    <option value="all">-- Tất cả người thực hiện --</option>
+                    <!-- Dynamically loaded members -->
+                </select>
+                <select class="filter-select" id="filter-type">
+                    <option value="all">-- Tất cả loại công việc --</option>
+                    <option value="technical">Hỗ trợ kỹ thuật</option>
+                    <option value="collective">Công việc tập thể</option>
+                </select>
+                <select class="filter-select" id="filter-priority">
+                    <option value="all">-- Tất cả độ ưu tiên --</option>
+                    <option value="high">Cao</option>
+                    <option value="medium">Trung bình</option>
+                    <option value="low">Thấp</option>
+                </select>
+                <button class="btn btn-secondary" id="btn-clear-filters" style="padding: 8px 12px; font-size: 13px;">
+                    <i class="fa-solid fa-filter-circle-xmark"></i> Xóa lọc
+                </button>
+            </div>
+
+            <!-- Kanban Grid -->
+            <div class="kanban-board">
+                <!-- Column 1: TO DO -->
+                <div class="kanban-column" id="col-todo">
+                    <div class="column-header">
+                        <div class="column-title-wrapper">
+                            <span class="column-dot todo"></span>
+                            <span class="column-title">Mới giao / Chờ làm</span>
+                        </div>
+                        <span class="column-count" id="count-todo">0</span>
+                    </div>
+                    <div class="column-cards" id="cards-todo" data-status="todo">
+                        <!-- JS renders tasks -->
+                    </div>
+                </div>
+
+                <!-- Column 2: IN PROGRESS -->
+                <div class="kanban-column" id="col-inprogress">
+                    <div class="column-header">
+                        <div class="column-title-wrapper">
+                            <span class="column-dot in-progress"></span>
+                            <span class="column-title">Đang thực hiện</span>
+                        </div>
+                        <span class="column-count" id="count-inprogress">0</span>
+                    </div>
+                    <div class="column-cards" id="cards-inprogress" data-status="in-progress">
+                        <!-- JS renders tasks -->
+                    </div>
+                </div>
+
+                <!-- Column 3: DONE -->
+                <div class="kanban-column" id="col-done">
+                    <div class="column-header">
+                        <div class="column-title-wrapper">
+                            <span class="column-dot success"></span>
+                            <span class="column-title">Đã hoàn thành</span>
+                        </div>
+                        <span class="column-count" id="count-done">0</span>
+                    </div>
+                    <div class="column-cards" id="cards-done" data-status="done">
+                        <!-- JS renders tasks -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PAGE 3: GUIDELINES SOPs -->
+        <section id="page-guidelines" class="page-container">
+            <div class="page-header">
+                <div class="page-title">
+                    <h2>Thư viện Hướng dẫn & Quy trình (SOP)</h2>
+                    <p>Các tài liệu kỹ thuật và hướng dẫn quy chuẩn phục vụ công việc.</p>
+                </div>
+                <button class="btn btn-primary" id="btn-add-guideline">
+                    <i class="fa-solid fa-plus"></i> Tạo quy trình hướng dẫn mới
+                </button>
+            </div>
+
+            <!-- Library View -->
+            <div class="library-layout">
+                <!-- Left Menu -->
+                <div class="library-sidebar">
+                    <div class="library-search">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" id="guideline-search" placeholder="Tìm hướng dẫn...">
+                    </div>
+                    <ul class="library-menu" id="guideline-list-menu">
+                        <!-- JS renders items -->
+                    </ul>
+                </div>
+
+                <!-- Right Detail Panel -->
+                <div class="library-content" id="guideline-detail-panel">
+                    <!-- JS renders selected guideline here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- PAGE 4: TEAM MEMBERS -->
+        <section id="page-team" class="page-container">
+            <div class="page-header">
+                <div class="page-title">
+                    <h2>Đội ngũ kỹ thuật & Nhân sự</h2>
+                    <p>Quản lý danh sách thành viên thực hiện công việc.</p>
+                </div>
+            </div>
+
+            <!-- Team Grid Layout -->
+            <div class="team-layout">
+                <!-- Left: Team Cards -->
+                <div>
+                    <div class="team-list-grid" id="team-members-grid">
+                        <!-- JS renders team members cards -->
+                    </div>
+                </div>
+
+                <!-- Right: Add Member Card -->
+                <div class="card" style="height: fit-content;">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <h3>Thêm thành viên mới</h3>
+                        </div>
+                    </div>
+                    <form id="form-add-member" style="display: flex; flex-direction: column; gap: 16px;">
+                        <div class="form-group">
+                            <label class="form-label" for="member-name">Họ và tên *</label>
+                            <input class="form-input" id="member-name" type="text" placeholder="Ví dụ: Nguyễn Văn A" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="member-role">Chức vụ / Vai trò *</label>
+                            <input class="form-input" id="member-role" type="text" placeholder="Ví dụ: Kỹ thuật viên" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="member-initials">Từ viết tắt Avatar (1-3 chữ cái) *</label>
+                            <input class="form-input" id="member-initials" type="text" placeholder="Ví dụ: VA" maxlength="3" required>
+                        </div>
+                        <button class="btn btn-primary" type="submit" style="width: 100%; justify-content: center;">
+                            <i class="fa-solid fa-user-plus"></i> Thêm thành viên
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- MODAL: ADD / EDIT TASK -->
+    <div class="modal-overlay" id="modal-task">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="task-modal-title">Giao việc mới</h3>
+                <button class="close-btn" id="btn-close-task-modal">&times;</button>
+            </div>
+            <form id="form-task">
+                <input type="hidden" id="task-id">
+                <div class="modal-body">
+                    <!-- Title -->
+                    <div class="form-group">
+                        <label class="form-label" for="task-title">Tiêu đề công việc *</label>
+                        <input class="form-input" id="task-title" type="text" placeholder="Nhập tiêu đề công việc..." required>
+                    </div>
+
+                    <!-- Layout 2 Columns -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="task-type">Phân loại *</label>
+                            <select class="form-select" id="task-type" required>
+                                <option value="technical">Hỗ trợ kỹ thuật</option>
+                                <option value="collective">Công việc tập thể</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="task-priority">Độ ưu tiên *</label>
+                            <select class="form-select" id="task-priority" required>
+                                <option value="low">Thấp</option>
+                                <option value="medium" selected>Trung bình</option>
+                                <option value="high">Cao</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="task-assignee">Người thực hiện *</label>
+                            <select class="form-select" id="task-assignee" required>
+                                <!-- JS renders members list -->
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="task-due-date">Hạn chót *</label>
+                            <input class="form-input" id="task-due-date" type="date" required>
+                        </div>
+                    </div>
+
+                    <!-- Linked SOP / Guideline -->
+                    <div class="form-group">
+                        <label class="form-label" for="task-guideline">Áp dụng hướng dẫn mẫu (Không bắt buộc)</label>
+                        <select class="form-select" id="task-guideline">
+                            <option value="">-- Không áp dụng hướng dẫn --</option>
+                            <!-- JS renders guidelines list -->
+                        </select>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="form-group">
+                        <label class="form-label" for="task-desc">Mô tả công việc</label>
+                        <textarea class="form-textarea" id="task-desc" placeholder="Mô tả cụ thể yêu cầu công việc..."></textarea>
+                    </div>
+
+                    <!-- Interactive Checklist Builder -->
+                    <div class="form-group">
+                        <label class="form-label">Checklist hướng dẫn từng bước</label>
+                        <div class="checklist-builder">
+                            <div class="checklist-items-list" id="modal-checklist-container">
+                                <!-- Dynamic input boxes for checklist item -->
+                            </div>
+                            <button type="button" class="btn btn-secondary" id="btn-add-checklist-item" style="padding: 6px 12px; font-size: 12px; width: fit-content; margin-top: 4px;">
+                                <i class="fa-solid fa-plus"></i> Thêm bước thực hiện
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="btn-cancel-task-modal">Hủy</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa-solid fa-check"></i> Lưu công việc
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: VIEW TASK DETAIL & UPDATE CHECKLIST -->
+    <div class="modal-overlay" id="modal-task-detail">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Chi tiết công việc</h3>
+                <button class="close-btn" id="btn-close-detail-modal">&times;</button>
+            </div>
+            <div class="modal-body" id="task-detail-body">
+                <!-- JS dynamically renders detailed content -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="btn-close-detail-footer">Hoàn tất</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: CREATE / EDIT GUIDELINE -->
+    <div class="modal-overlay" id="modal-guideline">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="guideline-modal-title">Tạo quy trình hướng dẫn mới</h3>
+                <button class="close-btn" id="btn-close-guideline-modal">&times;</button>
+            </div>
+            <form id="form-guideline">
+                <input type="hidden" id="guideline-id">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="form-label" for="guide-title">Tiêu đề hướng dẫn *</label>
+                        <input class="form-input" id="guide-title" type="text" placeholder="Ví dụ: Quy trình sao lưu dữ liệu SQL Server" required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="guide-type">Phân loại *</label>
+                            <select class="form-select" id="guide-type" required>
+                                <option value="technical">Hỗ trợ kỹ thuật</option>
+                                <option value="collective">Công việc tập thể</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="guide-summary">Tóm tắt ngắn gọn *</label>
+                            <input class="form-input" id="guide-summary" type="text" placeholder="Mô tả tóm tắt nội dung quy trình..." required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="guide-content">Nội dung hướng dẫn chi tiết (Hỗ trợ Markdown) *</label>
+                        <textarea class="form-textarea" id="guide-content" style="min-height: 180px;" placeholder="Sử dụng định dạng tiêu đề (###), danh sách số (1. 2.), danh sách chấm đầu dòng (-), khối code (``) để định dạng..." required></textarea>
+                    </div>
+
+                    <!-- Checklist Template builder -->
+                    <div class="form-group">
+                        <label class="form-label">Checklist mẫu (Sẽ tự động điền khi tạo công việc từ hướng dẫn này)</label>
+                        <div class="checklist-builder">
+                            <div class="checklist-items-list" id="modal-guide-checklist-container">
+                                <!-- Dynamic elements -->
+                            </div>
+                            <button type="button" class="btn btn-secondary" id="btn-add-guide-checklist-item" style="padding: 6px 12px; font-size: 12px; width: fit-content; margin-top: 4px;">
+                                <i class="fa-solid fa-plus"></i> Thêm đầu mục checklist
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="btn-cancel-guideline-modal">Hủy</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa-solid fa-check"></i> Lưu quy trình
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="templates.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
