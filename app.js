@@ -19,7 +19,7 @@ let state = {
 // Khởi tạo và tải dữ liệu từ localStorage
 function initApp() {
     // 0. Kiểm tra phiên bản dữ liệu (để tự động chuyển giao sang bộ dữ liệu giáo dục/sự kiện)
-    const DB_VERSION = "2.0";
+    const DB_VERSION = "3.0";
     const savedVersion = localStorage.getItem("itflow_db_version");
     if (savedVersion !== DB_VERSION) {
         localStorage.removeItem("itflow_tasks");
@@ -147,14 +147,14 @@ function updateDashboardStats() {
     document.getElementById("stat-done-tasks").innerText = done;
 
     // Tính toán tiến trình theo phân loại
-    const techTasks = state.tasks.filter(t => t.type === "technical");
+    const techTasks = state.tasks.filter(t => t.type === "company_tech");
     const techDone = techTasks.filter(t => t.status === "done").length;
     const techPercent = techTasks.length > 0 ? Math.round((techDone / techTasks.length) * 100) : 0;
     
     document.getElementById("progress-text-technical").innerText = `${techPercent}% (${techDone}/${techTasks.length})`;
     document.getElementById("progress-fill-technical").style.width = `${techPercent}%`;
 
-    const colTasks = state.tasks.filter(t => t.type === "collective");
+    const colTasks = state.tasks.filter(t => t.type === "event_tech");
     const colDone = colTasks.filter(t => t.status === "done").length;
     const colPercent = colTasks.length > 0 ? Math.round((colDone / colTasks.length) * 100) : 0;
 
@@ -259,8 +259,8 @@ function createTaskCardDOM(task, isDraggable = true) {
     const assigneeAvatar = member ? member.avatar : "??";
 
     // Phân loại nhãn
-    const typeLabel = task.type === "technical" ? "Hỗ trợ kỹ thuật" : "Tổ chức Sự kiện";
-    const typeClass = task.type === "technical" ? "tech" : "collective";
+    const typeLabel = task.type === "company_tech" ? "Kỹ thuật Công ty" : "Kỹ thuật Sự kiện";
+    const typeClass = task.type === "company_tech" ? "tech" : "collective";
 
     // Độ ưu tiên nhãn
     let priorityLabel = "Thấp";
@@ -510,7 +510,7 @@ function populateSelectDropdowns() {
     const taskGuideline = document.getElementById("task-guideline");
     taskGuideline.innerHTML = '<option value="">-- Không áp dụng hướng dẫn --</option>';
     state.guidelines.forEach(g => {
-        const typeLabel = g.type === "technical" ? "Kỹ thuật" : "Tập thể";
+        const typeLabel = g.type === "company_tech" ? "KT Công ty" : "KT Sự kiện";
         taskGuideline.innerHTML += `<option value="${g.id}">[${typeLabel}] ${g.title}</option>`;
     });
 }
@@ -668,8 +668,8 @@ function viewTaskDetail(taskId) {
     const member = state.members.find(m => m.id === task.assignedTo);
     const assigneeName = member ? `${member.name} (${member.role})` : "Chưa phân công";
     
-    const typeLabel = task.type === "technical" ? "Hỗ trợ kỹ thuật" : "Tổ chức Sự kiện";
-    const typeClass = task.type === "technical" ? "tech" : "collective";
+    const typeLabel = task.type === "company_tech" ? "Kỹ thuật Công ty" : "Kỹ thuật Sự kiện";
+    const typeClass = task.type === "company_tech" ? "tech" : "collective";
 
     let priorityLabel = "Thấp";
     if (task.priority === "high") priorityLabel = "Cao";
@@ -833,8 +833,8 @@ function renderGuidelineDetail(guideId) {
         return;
     }
 
-    const typeLabel = guide.type === "technical" ? "Hỗ trợ kỹ thuật" : "Tổ chức Sự kiện";
-    const typeClass = guide.type === "technical" ? "tech" : "collective";
+    const typeLabel = guide.type === "company_tech" ? "Kỹ thuật Công ty" : "Kỹ thuật Sự kiện";
+    const typeClass = guide.type === "company_tech" ? "tech" : "collective";
 
     contentPanel.innerHTML = `
         <div class="library-content-header">
@@ -1034,13 +1034,15 @@ function renderTeamMembers() {
         const activeTasksCount = state.tasks.filter(t => t.assignedTo === member.id && t.status !== "done").length;
         const totalTasksCount = state.tasks.filter(t => t.assignedTo === member.id).length;
 
+        const deptLabel = member.dept === "company_tech" ? "Kỹ thuật Công ty" : "Kỹ thuật Sự kiện";
+
         const card = document.createElement("div");
         card.className = "member-card";
         card.innerHTML = `
             <div class="avatar member-card-avatar">${member.avatar}</div>
             <div class="member-card-info">
                 <span class="member-card-name">${member.name}</span>
-                <span class="member-card-role">${member.role}</span>
+                <span class="member-card-role">${member.role} | <strong style="color: var(--color-primary);">${deptLabel}</strong></span>
                 <span class="member-card-stats">
                     <i class="fa-solid fa-list-check"></i> Đang làm: ${activeTasksCount} | Tổng giao: ${totalTasksCount}
                 </span>
@@ -1064,6 +1066,7 @@ function startEditMember(memberId) {
     document.getElementById("member-name").value = member.name;
     document.getElementById("member-role").value = member.role;
     document.getElementById("member-initials").value = member.avatar;
+    document.getElementById("member-dept").value = member.dept || "company_tech";
 
     document.getElementById("member-form-title").innerText = "Sửa thông tin thành viên";
     
@@ -1080,6 +1083,7 @@ function startEditMember(memberId) {
 function cancelMemberEdit() {
     document.getElementById("member-id").value = "";
     document.getElementById("form-add-member").reset();
+    document.getElementById("member-dept").value = "company_tech";
 
     document.getElementById("member-form-title").innerText = "Thêm thành viên mới";
     
@@ -1097,8 +1101,9 @@ function handleAddMemberSubmit(e) {
     const name = document.getElementById("member-name").value.trim();
     const role = document.getElementById("member-role").value.trim();
     const initials = document.getElementById("member-initials").value.trim().toUpperCase();
+    const dept = document.getElementById("member-dept").value;
 
-    if (name && role && initials) {
+    if (name && role && initials && dept) {
         if (id) {
             // Cập nhật thành viên hiện tại
             const index = state.members.findIndex(m => m.id === id);
@@ -1107,6 +1112,7 @@ function handleAddMemberSubmit(e) {
                     ...state.members[index],
                     name,
                     role,
+                    dept,
                     avatar: initials
                 };
                 saveState("members");
@@ -1117,6 +1123,7 @@ function handleAddMemberSubmit(e) {
                 id: "mem-" + Date.now(),
                 name,
                 role,
+                dept,
                 avatar: initials
             };
             state.members.push(newMember);

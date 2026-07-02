@@ -1,55 +1,54 @@
 // Dữ liệu mẫu khởi tạo cho hệ thống quản lý phân chia giao việc - Phòng Kỹ thuật & Sự kiện Giáo dục
 
 const DEFAULT_MEMBERS = [
-    { id: "mem-1", name: "Nguyễn Văn An", role: "Trưởng phòng Kỹ thuật & Sự kiện", avatar: "AN" },
-    { id: "mem-2", name: "Trần Thị Bình", role: "Chuyên viên Âm thanh - Ánh sáng", avatar: "TB" },
-    { id: "mem-3", name: "Lê Hoàng Nam", role: "Kỹ thuật viên Thiết bị & Lớp học", avatar: "HN" },
-    { id: "mem-4", name: "Phạm Minh Thư", role: "Chuyên viên Hệ thống & Livestream", avatar: "MT" }
+    { id: "mem-1", name: "Nguyễn Văn An", role: "Trưởng phòng Kỹ thuật Công ty", dept: "company_tech", avatar: "AN" },
+    { id: "mem-2", name: "Trần Thị Bình", role: "Trưởng nhóm Kỹ thuật Sự kiện", dept: "event_tech", avatar: "TB" },
+    { id: "mem-3", name: "Lê Hoàng Nam", role: "Kỹ thuật viên Mạng & Hệ thống", dept: "company_tech", avatar: "HN" },
+    { id: "mem-4", name: "Phạm Minh Thư", role: "Kỹ thuật viên Âm thanh & Livestream", dept: "event_tech", avatar: "MT" }
 ];
 
 const DEFAULT_GUIDELINES = [
     {
         id: "guide-1",
-        title: "Quy trình lắp đặt thiết bị CNTT và máy chiếu phòng học",
-        type: "technical",
-        summary: "Các bước chuẩn bị, kết nối máy chiếu, âm thanh mic giảng dạy tại phòng học giáo dục.",
+        title: "Quy trình cấu hình và lắp đặt thiết bị CNTT phòng học",
+        type: "company_tech",
+        summary: "Quy trình chuẩn bị máy tính, kết nối máy chiếu, và micro giảng dạy phục vụ lớp học trực tiếp.",
         content: `### Quy trình chuẩn bị phòng học giảng dạy trực tiếp:
 1. **Kiểm tra thiết bị hiển thị**:
-   - Bật máy chiếu (Projector) hoặc màn hình tương tác thông minh.
-   - Kiểm tra cổng cáp kết nối (HDMI, VGA, Type-C) tại bàn giáo viên, đảm bảo truyền hình ảnh và âm thanh rõ nét.
+   - Bật máy chiếu (Projector) hoặc màn hình tương tác thông minh của phòng học.
+   - Kiểm tra cổng cáp kết nối (HDMI, VGA, Type-C) tại bàn giáo viên, đảm bảo truyền hình ảnh ổn định.
 2. **Kiểm tra âm thanh giảng đường**:
-   - Bật cục đẩy (amply) và Mixer của phòng học.
-   - Kiểm tra micro không dây (hoặc micro cài áo), sạc sẵn pin và đặt trên bàn giảng viên.
-   - Thử nói vào micro xem tiếng loa phòng học có trong, vang và không bị rè hay hú hay không.
-3. **Cài đặt phần mềm giảng dạy**:
-   - Bật máy tính của phòng học (nếu có) hoặc hỗ trợ giáo viên kết nối Laptop cá nhân.
-   - Đảm bảo kết nối mạng LAN hoặc Wifi hoạt động ổn định.
-   - Mở sẵn phần mềm Office, trình duyệt web hoặc các công cụ dạy học bổ trợ.`,
+   - Bật amply và bàn trộn Mixer tại góc phòng học.
+   - Kiểm tra pin và sạc của micro không dây cầm tay/cài áo của giáo viên.
+   - Thử nói vào micro xem tiếng loa trong và không bị rè hay hú hay không.
+3. **Cấu hình máy tính giảng đường**:
+   - Khởi động máy tính cài sẵn của phòng học hoặc hỗ trợ giáo viên kết nối Laptop cá nhân.
+   - Đảm bảo kết nối mạng LAN hoặc Wifi ổn định.
+   - Kiểm tra và cài đặt các phần mềm học tập cần thiết.`,
         checklist: [
-            "Kiểm tra máy chiếu và cáp tín hiệu HDMI/VGA tại bàn giáo viên",
+            "Kiểm tra máy chiếu và cổng tín hiệu HDMI/VGA tại bàn giáo viên",
             "Bật hệ thống âm thanh và kiểm tra loa phòng học",
             "Kiểm tra dung lượng pin và sạc micro không dây cho giảng viên",
-            "Bật máy tính giảng đường và kiểm tra kết nối mạng Wifi/LAN",
-            "Thử mở phần mềm trình chiếu PowerPoint/PDF kiểm tra hiển thị",
+            "Bật máy tính giảng đường và kiểm tra kết nối mạng LAN/Wifi",
+            "Thử mở phần mềm trình chiếu PowerPoint/PDF để kiểm tra hiển thị",
             "Bàn giao lớp học và hướng dẫn nhanh cho giáo viên nếu cần"
         ]
     },
     {
         id: "guide-2",
         title: "Quy trình thiết lập và vận hành livestream hội thảo giáo dục",
-        type: "collective",
-        summary: "Hướng dẫn cài đặt OBS Studio, kết nối camera và luồng livestream trên Zoom/Youtube.",
+        type: "event_tech",
+        summary: "Hướng dẫn kết nối camera, setup OBS Studio và đẩy luồng livestream lên Zoom/Youtube.",
         content: `### Các bước cấu hình livestream sự kiện trực tuyến:
-1. **Kết nối phần cứng**:
-   - Lắp đặt máy quay/camera sự kiện lên chân tripod, kết nối vào máy tính thông qua thiết bị Capture Card (USB HDMI Capture).
-   - Lấy tín hiệu âm thanh sạch (Line-out) từ bàn Mixer sự kiện cắm vào đường Mic-in/Line-in của máy tính phát stream.
+1. **Kết nối thiết bị phần cứng**:
+   - Lắp đặt máy quay/camera sự kiện lên chân tripod, kết nối vào máy tính thông qua thiết bị Capture Card.
+   - Lấy đường âm thanh sạch (Line-out) từ bàn Mixer âm thanh sự kiện cắm vào ngõ Line-in của máy tính phát stream.
 2. **Thiết lập OBS Studio**:
-   - Tạo các Cảnh (Scenes) bao gồm: Cảnh chờ (Banner), Cảnh máy quay chính, Cảnh máy quay phụ, Cảnh trình chiếu Slide giáo án.
-   - Điều chỉnh mức âm thanh (Audio Mixer) đảm bảo giọng nói người phát biểu đạt mức xanh-vàng, không bị vượt ngưỡng đỏ gây rè.
-3. **Thiết lập luồng phát và giám sát**:
-   - Lấy Khóa luồng (Stream Key) từ Youtube Live, Facebook Live hoặc Zoom Webinar dán vào cấu hình Stream trong OBS.
-   - Bắt đầu phát luồng thử nghiệm (ở chế độ riêng tư) để đánh giá đường truyền mạng và độ trễ.
-   - Khi sự kiện bắt đầu, kích hoạt phát chính thức và luôn có 1 kỹ thuật viên theo dõi chat, tương tác hỗ trợ học viên từ xa.`,
+   - Thiết lập các Cảnh (Scenes) bao gồm: Cảnh chờ (Banner), Cảnh giảng viên trực diện, Cảnh trình chiếu Slide tài liệu, Cảnh toàn sân khấu.
+   - Giám sát cột âm thanh (Audio Mixer) trong OBS đảm bảo giọng người phát biểu rõ ràng, không bị rè.
+3. **Cấu hình luồng phát**:
+   - Lấy Server URL và Stream Key từ Youtube Live, Facebook Live hoặc Zoom Webinar dán vào cấu hình OBS.
+   - Kích hoạt phát luồng thử nghiệm chế độ riêng tư trước 30 phút để test độ ổn định.`,
         checklist: [
             "Kết nối máy quay camera sự kiện thông qua capture card vào máy tính",
             "Cắm dây lấy âm thanh line-out từ Mixer vào máy tính livestream",
@@ -62,19 +61,18 @@ const DEFAULT_GUIDELINES = [
     {
         id: "guide-3",
         title: "Quy trình lắp đặt hệ thống Âm thanh & Ánh sáng sự kiện tại Hội trường",
-        type: "collective",
-        summary: "Các bước phối hợp lắp đặt loa hội trường, micro sự kiện và đèn chiếu sáng sân khấu.",
+        type: "event_tech",
+        summary: "Các bước phối hợp lắp đặt loa hội trường, micro bục phát biểu và đèn sân khấu sự kiện.",
         content: `### Các bước lắp đặt phần cứng kỹ thuật cho sự kiện giáo dục:
 1. **Thiết lập âm thanh**:
-   - Bố trí 2 loa cột chính (Main Speaker) hai bên sân khấu hướng về phía khán giả, và các loa kiểm âm (Monitor) hướng về phía bục phát biểu.
-   - Đi dây cáp loa gọn gàng, dán băng keo cố định trên sàn để tránh người qua lại vấp ngã.
-   - Kết nối micro bục phát biểu, micro cầm tay của MC và đại biểu vào bàn Mixer.
-2. **Thiết lập ánh sáng sân khấu**:
-   - Lắp đặt các đèn Par LED chiếu sáng ấm bục phát biểu và đèn màu tạo hiệu ứng phông nền sân khấu.
-   - Cắm điện kiểm tra cường độ sáng, căn chỉnh góc chiếu tránh rọi thẳng vào mắt người đứng trên bục.
-3. **Sound check & Cân chỉnh**:
-   - Phát nhạc nền kiểm tra sự cân bằng âm thanh giữa loa trái và loa phải.
-   - Thử giọng micro của MC và các đại diện phát biểu để điều chỉnh EQ âm sắc, căn chỉnh chống hú (Anti-Feedback).`,
+   - Đặt 2 loa chính hướng về khán giả, các loa kiểm âm (Monitor) đặt hướng về phía sân khấu cho diễn giả nghe.
+   - Kết nối micro bục phát biểu và các micro không dây cầm tay của đại biểu vào bàn Mixer.
+   - Đi dây gọn gàng dọc mép tường, sử dụng băng keo dán cố định để chống trượt và vấp ngã.
+2. **Thiết lập ánh sáng**:
+   - Lắp các đèn LED ấm chiếu bục phát biểu và các đèn màu tạo phông nền.
+   - Căn chỉnh góc chiếu sáng sân khấu, tránh rọi trực tiếp vào mắt người đứng trên bục.
+3. **Sound check**:
+   - Thử giọng micro của từng đại biểu để điều chỉnh EQ tiếng micro trong trẻo và hạn chế rú rít.`,
         checklist: [
             "Khảo sát sơ đồ bố trí sân khấu hội trường và vị trí đặt loa",
             "Lắp đặt, kết nối dây loa chính và loa monitor kiểm âm sân khấu",
@@ -87,20 +85,18 @@ const DEFAULT_GUIDELINES = [
     {
         id: "guide-4",
         title: "Quy trình cấp phát tài khoản LMS và phòng học Zoom cho khóa học mới",
-        type: "technical",
-        summary: "Quy trình cấp phát tài khoản học trực tuyến, tạo lớp Zoom và gửi thông tin tự động cho học viên.",
+        type: "company_tech",
+        summary: "Quy trình cấp tài khoản học trực tuyến, tạo phòng Zoom lớp học và gửi email tự động cho học viên.",
         content: `### Quy trình xử lý yêu cầu đào tạo trực tuyến:
 1. **Tiếp nhận thông tin khóa học**:
-   - Nhận danh sách học viên đăng ký mới, thông tin lịch học và giáo viên phụ trách từ bộ phận Đào tạo.
-2. **Cấu hình trên hệ thống quản lý học tập LMS**:
-   - Đăng nhập quyền Admin hệ thống LMS, import danh sách học viên bằng file Excel.
-   - Tạo khóa học mới, gán giáo viên phụ trách và add học viên vào lớp học tương ứng.
-3. **Tạo lớp học trực tuyến Zoom**:
-   - Tạo lịch họp định kỳ (Recurring Meeting) trên Zoom theo đúng thời khóa biểu.
-   - Thiết lập các chế độ an toàn: Bật phòng chờ (Waiting Room), tắt mic tự động khi vào phòng, thiết lập passcode lớp học.
-   - Gán quyền Co-host/Host cho email của giáo viên giảng dạy.
+   - Nhận danh sách học viên đăng ký, thông tin thời khóa biểu và email giảng viên từ bộ phận Đào tạo.
+2. **Import tài khoản hệ thống LMS**:
+   - Đăng nhập quyền Admin LMS, tạo lớp học mới và import danh sách học viên qua file Excel.
+3. **Cấu hình lớp học Zoom**:
+   - Tạo phòng học Zoom cố định theo lịch học định kỳ.
+   - Thiết lập an toàn: bật phòng chờ (Waiting Room), thiết lập mật khẩu lớp, và gán email giáo viên làm Host/Co-host.
 4. **Gửi thông báo**:
-   - Soạn thảo và kích hoạt gửi email tự động cung cấp tài khoản LMS, mật khẩu và link học Zoom kèm hướng dẫn truy cập cho học viên.`,
+   - Kích hoạt gửi email tự động cung cấp tài khoản LMS và link Zoom học tập cho học viên.`,
         checklist: [
             "Tiếp nhận danh sách lớp và học viên từ phòng Đào tạo",
             "Import danh sách học viên và gán khóa học trên hệ thống LMS",
@@ -116,19 +112,19 @@ const DEFAULT_TASKS = [
     {
         id: "task-1",
         title: "Chuẩn bị thiết bị và máy chiếu cho phòng học 302 khóa học mới",
-        description: "Lớp học IELTS Premium mới bắt đầu lúc 18:00 tối nay. Cần chuẩn bị sẵn máy chiếu, sạc pin micro không dây và kiểm tra âm thanh phòng học 302.",
-        type: "technical",
+        description: "Lớp học IELTS Premium mới của công ty sẽ bắt đầu lúc 18:00 tối nay. Cần chuẩn bị sẵn máy chiếu, sạc pin micro không dây và kiểm tra âm thanh phòng học 302.",
+        type: "company_tech",
         assignedTo: "mem-3",
         priority: "high",
         status: "todo",
         dueDate: "2026-07-02",
         guidelineId: "guide-1",
         checklist: [
-            { text: "Kiểm tra máy chiếu và cáp tín hiệu HDMI/VGA tại bàn giáo viên", completed: true },
+            { text: "Kiểm tra máy chiếu và cổng tín hiệu HDMI/VGA tại bàn giáo viên", completed: true },
             { text: "Bật hệ thống âm thanh và kiểm tra loa phòng học", completed: false },
             { text: "Kiểm tra dung lượng pin và sạc micro không dây cho giảng viên", completed: true },
-            { text: "Bật máy tính giảng đường và kiểm tra kết nối mạng Wifi/LAN", completed: false },
-            { text: "Thử mở phần mềm trình chiếu PowerPoint/PDF kiểm tra hiển thị", completed: false },
+            { text: "Bật máy tính giảng đường và kiểm tra kết nối mạng LAN/Wifi", completed: false },
+            { text: "Thử mở phần mềm trình chiếu PowerPoint/PDF để kiểm tra hiển thị", completed: false },
             { text: "Bàn giao lớp học và hướng dẫn nhanh cho giáo viên nếu cần", completed: false }
         ]
     },
@@ -136,8 +132,8 @@ const DEFAULT_TASKS = [
         id: "task-2",
         title: "Cấp phát tài khoản LMS và Zoom cho khóa IELTS Intensive Tháng 7",
         description: "Khóa học trực tuyến IELTS Intensive sẽ khai giảng vào ngày 05/07. Cần cấp tài khoản cho 25 học viên mới và gửi email thông báo trước ngày 04/07.",
-        type: "technical",
-        assignedTo: "mem-4",
+        type: "company_tech",
+        assignedTo: "mem-1",
         priority: "medium",
         status: "in-progress",
         dueDate: "2026-07-04",
@@ -154,9 +150,9 @@ const DEFAULT_TASKS = [
     {
         id: "task-3",
         title: "Setup âm thanh, ánh sáng và livestream cho Hội thảo Tuyển sinh ngày 05/07",
-        description: "Sự kiện tuyển sinh quy mô lớn của công ty giáo dục diễn ra tại Hội trường chính lúc 08:30 ngày 05/07. Cần setup hệ thống âm thanh, ánh sáng sân khấu và chuẩn bị thiết bị phát livestream lên Youtube.",
-        type: "collective",
-        assignedTo: "mem-1",
+        description: "Sự kiện tuyển sinh của công ty giáo dục diễn ra tại Hội trường chính lúc 08:30 ngày 05/07. Bộ phận kỹ thuật sự kiện cần setup hệ thống âm thanh, ánh sáng sân khấu và chuẩn bị thiết bị phát livestream lên Youtube.",
+        type: "event_tech",
+        assignedTo: "mem-2",
         priority: "high",
         status: "todo",
         dueDate: "2026-07-05",
@@ -173,9 +169,9 @@ const DEFAULT_TASKS = [
     {
         id: "task-4",
         title: "Vận hành Livestream Lễ Khai giảng Khóa học hè 2026",
-        description: "Bộ phận Đào tạo yêu cầu phát trực tiếp Lễ Khai giảng lên Fanpage công ty. Bắt đầu truyền hình trực tiếp lúc 09:00 ngày 03/07/2026.",
-        type: "collective",
-        assignedTo: "mem-2",
+        description: "Phát trực tiếp Lễ Khai giảng lên Fanpage công ty. Bộ phận kỹ thuật sự kiện chịu trách nhiệm setup OBS Studio và trực luồng phát Zoom webinar.",
+        type: "event_tech",
+        assignedTo: "mem-4",
         priority: "high",
         status: "in-progress",
         dueDate: "2026-07-03",
