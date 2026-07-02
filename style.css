@@ -856,6 +856,14 @@ header {
     overflow: hidden;
 }
 
+.modal-content form {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    overflow: hidden;
+    min-height: 0;
+}
+
 .modal-overlay.active .modal-content {
     transform: translateY(0);
 }
