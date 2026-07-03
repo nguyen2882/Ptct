@@ -1372,3 +1372,197 @@ header {
 .suggestion-chip:active {
     transform: translateY(0);
 }
+
+/* Troubleshooting Handbook / Issues styles */
+.issues-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+    gap: 24px;
+}
+
+.issue-card {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-glass);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+}
+
+.issue-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+    border-color: rgba(255, 255, 255, 0.12);
+}
+
+.issue-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.issue-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.4;
+}
+
+.issue-section {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.issue-section-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.issue-symptom {
+    background-color: var(--color-danger-light);
+    border-left: 4px solid var(--color-danger);
+    color: var(--text-primary);
+    padding: 10px 14px;
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    font-size: 13px;
+    line-height: 1.5;
+    white-space: pre-line;
+}
+
+.issue-solution {
+    background-color: var(--color-success-light);
+    border-left: 4px solid var(--color-success);
+    color: var(--text-primary);
+    padding: 10px 14px;
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    font-size: 13px;
+    line-height: 1.5;
+    white-space: pre-line;
+}
+
+.issue-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    border-top: 1px solid var(--border-glass);
+    padding-top: 12px;
+    margin-top: auto;
+}
+
+/* Dashboard Columns */
+.dashboard-left {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.dashboard-right {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* Quick Links Styles */
+.quicklink-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    background-color: var(--bg-tertiary);
+    border: 1px solid var(--border-glass);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    transition: var(--transition);
+}
+
+.quicklink-item:hover {
+    background-color: var(--color-primary-light);
+    border-color: rgba(99, 102, 241, 0.2);
+    color: var(--color-primary);
+    transform: translateX(2px);
+}
+
+.quicklink-item-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.quicklink-item-left i {
+    color: var(--text-muted);
+    font-size: 12px;
+}
+
+.quicklink-item:hover .quicklink-item-left i {
+    color: var(--color-primary);
+}
+
+.quicklink-delete-btn {
+    opacity: 0;
+    color: var(--text-muted);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 12px;
+    padding: 2px 6px;
+    transition: var(--transition);
+    border-radius: var(--radius-sm);
+}
+
+.quicklink-item:hover .quicklink-delete-btn {
+    opacity: 1;
+}
+
+.quicklink-delete-btn:hover {
+    color: var(--color-danger);
+    background-color: var(--color-danger-light);
+}
+
+/* Dashboard Issues Styles */
+.dashboard-issue-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    background-color: var(--bg-tertiary);
+    border: 1px solid var(--border-glass);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    transition: var(--transition);
+}
+
+.dashboard-issue-item:hover {
+    background-color: var(--color-warning-light);
+    border-color: rgba(245, 158, 11, 0.2);
+    color: var(--text-primary);
+    transform: translateX(2px);
+}
+
+.dashboard-issue-item:hover .fa-chevron-right {
+    transform: translateX(2px);
+    color: var(--color-warning);
+}
+
+.dashboard-issue-item .fa-chevron-right {
+    transition: var(--transition);
+}

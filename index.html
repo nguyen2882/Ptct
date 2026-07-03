@@ -44,6 +44,12 @@
                     <span>Đội ngũ kỹ thuật</span>
                 </a>
             </li>
+            <li id="nav-issues">
+                <a href="#issues">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    <span>Lỗi thường gặp</span>
+                </a>
+            </li>
         </ul>
 
         <div class="sidebar-footer">
@@ -140,46 +146,82 @@
 
             <!-- Dashboard Split Content -->
             <div class="dashboard-row">
-                <!-- Left Card: High Priority Tasks -->
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-title">
-                            <h3>Việc khẩn cấp cần xử lý (Độ ưu tiên cao)</h3>
+                <!-- Left Column -->
+                <div class="dashboard-left">
+                    <!-- Left Card: High Priority Tasks -->
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <h3>Việc khẩn cấp cần xử lý (Độ ưu tiên cao)</h3>
+                            </div>
+                            <button class="btn btn-secondary" onclick="document.getElementById('nav-board').click();" style="font-size: 12px; padding: 6px 12px;">
+                                Xem tất cả
+                            </button>
                         </div>
-                        <button class="btn btn-secondary" onclick="document.getElementById('nav-board').click();" style="font-size: 12px; padding: 6px 12px;">
-                            Xem tất cả
-                        </button>
-                    </div>
-                    <div class="column-cards" id="dashboard-urgent-tasks" style="overflow: visible; padding: 0;">
-                        <!-- JS renders urgent cards here -->
+                        <div class="column-cards" id="dashboard-urgent-tasks" style="overflow: visible; padding: 0;">
+                            <!-- JS renders urgent cards here -->
+                        </div>
                     </div>
                 </div>
 
-                <!-- Right Card: Categories Progress -->
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-title">
-                            <h3>Tỉ lệ theo phân loại</h3>
+                <!-- Right Column -->
+                <div class="dashboard-right">
+                    <!-- Right Card 1: Categories Progress -->
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <h3>Tỉ lệ theo phân loại</h3>
+                            </div>
+                        </div>
+                        <div class="progress-list">
+                            <div class="progress-item">
+                                <div class="progress-header">
+                                    <span>Bộ phận Kỹ thuật Công ty</span>
+                                    <span id="progress-text-technical">0% (0/0)</span>
+                                </div>
+                                <div class="progress-bar-bg">
+                                    <div class="progress-bar-fill technical" id="progress-fill-technical" style="width: 0%;"></div>
+                                </div>
+                            </div>
+                            <div class="progress-item">
+                                <div class="progress-header">
+                                    <span>Bộ phận Kỹ thuật Sự kiện</span>
+                                    <span id="progress-text-collective">0% (0/0)</span>
+                                </div>
+                                <div class="progress-bar-bg">
+                                    <div class="progress-bar-fill collective" id="progress-fill-collective" style="width: 0%;"></div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="progress-list">
-                        <div class="progress-item">
-                            <div class="progress-header">
-                                <span>Bộ phận Kỹ thuật Công ty</span>
-                                <span id="progress-text-technical">0% (0/0)</span>
+
+                    <!-- Right Card 2: Quick Links -->
+                    <div class="card">
+                        <div class="card-header" style="justify-content: space-between;">
+                            <div class="card-title">
+                                <h3><i class="fa-solid fa-link" style="margin-right: 8px; color: var(--color-primary);"></i>Liên kết nhanh</h3>
                             </div>
-                            <div class="progress-bar-bg">
-                                <div class="progress-bar-fill technical" id="progress-fill-technical" style="width: 0%;"></div>
-                            </div>
+                            <button class="btn-icon" id="btn-add-quicklink" title="Thêm liên kết" style="width: 28px; height: 28px; border-radius: var(--radius-sm);">
+                                <i class="fa-solid fa-plus"></i>
+                            </button>
                         </div>
-                        <div class="progress-item">
-                            <div class="progress-header">
-                                <span>Bộ phận Kỹ thuật Sự kiện</span>
-                                <span id="progress-text-collective">0% (0/0)</span>
+                        <div id="quicklinks-container" style="display: flex; flex-direction: column; gap: 10px; margin-top: 16px;">
+                            <!-- JS renders links here -->
+                        </div>
+                    </div>
+
+                    <!-- Right Card 3: Common Issues Shortcuts -->
+                    <div class="card">
+                        <div class="card-header" style="justify-content: space-between;">
+                            <div class="card-title">
+                                <h3><i class="fa-solid fa-triangle-exclamation" style="margin-right: 8px; color: var(--color-warning);"></i>Lỗi hỗ trợ thường gặp</h3>
                             </div>
-                            <div class="progress-bar-bg">
-                                <div class="progress-bar-fill collective" id="progress-fill-collective" style="width: 0%;"></div>
-                            </div>
+                            <button class="btn btn-secondary" onclick="document.getElementById('nav-issues').click();" style="font-size: 11px; padding: 4px 8px;">
+                                Xem tất cả
+                            </button>
+                        </div>
+                        <div id="dashboard-issues-container" style="display: flex; flex-direction: column; gap: 10px; margin-top: 16px;">
+                            <!-- JS renders 3-4 key issues here -->
                         </div>
                     </div>
                 </div>
@@ -356,6 +398,36 @@
                 </div>
             </div>
         </section>
+        <!-- PAGE 5: COMMON ISSUES / TROUBLESHOOTING -->
+        <section id="page-issues" class="page-container">
+            <div class="page-header">
+                <div class="page-title">
+                    <h2>Sổ tay Sự cố thường gặp</h2>
+                    <p>Tổng hợp các lỗi phổ biến khi hỗ trợ kỹ thuật & sự kiện và cách khắc phục nhanh.</p>
+                </div>
+                <button class="btn btn-primary" id="btn-add-issue">
+                    <i class="fa-solid fa-plus"></i> Thêm sự cố mới
+                </button>
+            </div>
+
+            <!-- Filters -->
+            <div class="board-filters">
+                <div class="header-search" style="margin: 0; width: 280px; border-radius: var(--radius-md); border-color: var(--border-glass);">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="issue-search" placeholder="Tìm sự cố, cách khắc phục...">
+                </div>
+                <select class="filter-select" id="filter-issue-dept">
+                    <option value="all">-- Tất cả phòng ban --</option>
+                    <option value="company_tech">Kỹ thuật Công ty</option>
+                    <option value="event_tech">Kỹ thuật Sự kiện</option>
+                </select>
+            </div>
+
+            <!-- Issues Grid -->
+            <div class="issues-grid" id="issues-grid">
+                <!-- JS renders issues card here -->
+            </div>
+        </section>
     </main>
 
     <!-- MODAL: ADD / EDIT TASK -->
@@ -522,6 +594,102 @@
                     </button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- MODAL: ADD / EDIT ISSUE -->
+    <div class="modal-overlay" id="modal-issue">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h3 id="issue-modal-title">Thêm sự cố thường gặp</h3>
+                <button class="close-btn" id="btn-close-issue-modal">&times;</button>
+            </div>
+            <form id="form-issue">
+                <input type="hidden" id="issue-id">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="form-label" for="issue-title-input">Tên/Tiêu đề sự cố *</label>
+                        <input class="form-input" id="issue-title-input" type="text" placeholder="Ví dụ: Máy chiếu bị đổi màu hoặc loang lổ" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="issue-dept-input">Phòng ban liên quan *</label>
+                        <select class="form-select" id="issue-dept-input" required>
+                            <option value="company_tech">Kỹ thuật Công ty</option>
+                            <option value="event_tech">Kỹ thuật Sự kiện</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="issue-symptom-input">Hiện tượng / Triệu chứng *</label>
+                        <textarea class="form-textarea" id="issue-symptom-input" placeholder="Ví dụ: Màn hình chiếu bị đổi sang màu vàng hoặc có vệt màu tím..." required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="issue-solution-input">Cách khắc phục từng bước *</label>
+                        <textarea class="form-textarea" id="issue-solution-input" style="min-height: 120px;" placeholder="Ví dụ: 1. Kiểm tra lại jack cáp VGA ở đầu máy và Laptop. 2. Nếu lỏng chân, cắm chặt lại..." required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="btn-cancel-issue-modal">Hủy</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa-solid fa-check"></i> Lưu sự cố
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: ADD QUICK LINK -->
+    <div class="modal-overlay" id="modal-quicklink">
+        <div class="modal-content" style="max-width: 400px;">
+            <div class="modal-header">
+                <h3>Thêm liên kết nhanh</h3>
+                <button class="close-btn" id="btn-close-quicklink-modal">&times;</button>
+            </div>
+            <form id="form-quicklink">
+                <div class="modal-body" style="padding: 20px; display: flex; flex-direction: column; gap: 16px;">
+                    <div class="form-group">
+                        <label class="form-label" for="link-title">Tên liên kết *</label>
+                        <input class="form-input" id="link-title" type="text" placeholder="Ví dụ: Trang quản trị LMS" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="link-url">Địa chỉ URL *</label>
+                        <input class="form-input" id="link-url" type="url" placeholder="Ví dụ: https://lms.congty.edu.vn" required>
+                    </div>
+                </div>
+                <div class="modal-footer" style="padding: 16px 20px;">
+                    <button type="button" class="btn btn-secondary" id="btn-cancel-quicklink-modal">Hủy</button>
+                    <button type="submit" class="btn btn-primary">Thêm</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: VIEW ISSUE DETAIL -->
+    <div class="modal-overlay" id="modal-issue-detail">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h3>Chi tiết Sự cố</h3>
+                <button class="close-btn" id="btn-close-issue-detail-modal">&times;</button>
+            </div>
+            <div class="modal-body" style="padding: 24px; display: flex; flex-direction: column; gap: 16px;">
+                <h4 id="issue-detail-title" style="font-size: 16px; font-weight: 700; color: var(--text-primary);"></h4>
+                <span class="tag" id="issue-detail-dept-tag"></span>
+                
+                <div class="issue-section">
+                    <span class="issue-section-title"><i class="fa-solid fa-circle-info"></i> Hiện tượng nhận biết</span>
+                    <div class="issue-symptom" id="issue-detail-symptom" style="margin-top: 6px;"></div>
+                </div>
+                
+                <div class="issue-section">
+                    <span class="issue-section-title"><i class="fa-solid fa-circle-check"></i> Hướng dẫn khắc phục</span>
+                    <div class="issue-solution" id="issue-detail-solution" style="margin-top: 6px; white-space: pre-line;"></div>
+                </div>
+            </div>
+            <div class="modal-footer" style="padding: 16px 24px;">
+                <button type="button" class="btn btn-primary" id="btn-close-issue-detail-footer" style="width: 100%; justify-content: center;">Đóng</button>
+            </div>
         </div>
     </div>
 

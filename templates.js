@@ -186,3 +186,48 @@ const DEFAULT_TASKS = [
         ]
     }
 ];
+
+const DEFAULT_ISSUES = [
+    {
+        id: "issue-1",
+        title: "Máy chiếu giảng đường bị đổi màu hoặc loang lổ",
+        dept: "company_tech",
+        symptom: "Màn hình chiếu bị chuyển sang màu vàng loang, màu tím hoặc hiển thị sai lệch màu so với màn hình máy tính.",
+        solution: "1. Kiểm tra lại giắc cắm cáp tín hiệu VGA/HDMI ở cả hai đầu (máy chiếu và máy tính).\n2. Nếu đầu cáp bị lỏng chân hoặc bám bụi, dùng chổi vệ sinh nhẹ rồi cắm lại thật chặt và siết ốc hai bên (đối với cáp VGA).\n3. Thử đổi cổng kết nối hoặc đổi sợi cáp khác để loại trừ khả năng cáp đứt ngầm.\n4. Reset cài đặt màu sắc (Color reset) trong menu hệ thống của máy chiếu về mặc định."
+    },
+    {
+        id: "issue-2",
+        title: "Microphone không dây giảng đường bị rú rít lớn khi giảng dạy",
+        dept: "event_tech",
+        symptom: "Tiếng hú chói tai phát ra từ loa khi giảng viên bật micro và di chuyển trên giảng đường hoặc sân khấu.",
+        solution: "1. Yêu cầu giảng viên đứng lệch góc với loa, tuyệt đối không đứng đối diện trực tiếp trước loa phát.\n2. Căn chỉnh giảm bớt tần số High (Treble) và giảm nhẹ Gain của kênh micro đó trên bàn Mixer âm thanh.\n3. Kích hoạt bộ lọc cắt tần số hú (chức năng Anti-Feedback hoặc Feedback Suppressor) nếu có thiết bị chuyên dụng."
+    },
+    {
+        id: "issue-3",
+        title: "Tín hiệu Livestream OBS Studio bị giật lag, rớt khung hình (Dropped Frames)",
+        dept: "event_tech",
+        symptom: "Quan sát thanh trạng thái OBS báo đỏ, tỷ lệ dropped frames tăng cao, người xem livestream phản hồi hình ảnh bị giật đứng.",
+        solution: "1. Kiểm tra kết nối mạng của máy tính livestream, ưu tiên cắm cáp mạng LAN dây, không dùng Wifi.\n2. Hạ Bitrate của OBS xuống mức an toàn (ví dụ: từ 6000kbps xuống 2500kbps - 3000kbps đối với chất lượng HD 720p).\n3. Đóng tất cả các chương trình chạy ngầm không cần thiết trên máy tính phát stream để giải phóng CPU/GPU."
+    },
+    {
+        id: "issue-4",
+        title: "Không thể đăng nhập vào hệ thống học tập LMS nội bộ của học viện",
+        dept: "company_tech",
+        symptom: "Trình duyệt báo lỗi bảo mật (SSL Error) hoặc báo lỗi tải trang, không hiện khung đăng nhập tài khoản học viên.",
+        solution: "1. Kiểm tra đồng hồ thời gian trên máy tính xem có bị lệch giờ thực tế không (nếu lệch giờ, SSL sẽ báo lỗi bảo mật). Tiến hành đồng bộ lại thời gian mạng.\n2. Hướng dẫn học viên xóa toàn bộ Cache trình duyệt bằng tổ hợp phím Ctrl + Shift + Delete rồi thử lại.\n3. Thử chuyển đổi sang trình duyệt ẩn danh hoặc dùng kết nối 3G/4G để loại trừ khả năng nghẽn DNS của mạng nội bộ."
+    },
+    {
+        id: "issue-5",
+        title: "Âm thanh từ Laptop giảng viên không phát ra loa lớn phòng học",
+        dept: "company_tech",
+        symptom: "Laptop vẫn phát ra tiếng nhỏ từ loa máy tính, hoặc không phát ra bất kỳ âm thanh nào mặc dù đã kết nối cáp HDMI.",
+        solution: "1. Nhấp chuột trái vào biểu tượng loa ở góc phải thanh Taskbar trên Windows.\n2. Chọn lại thiết bị phát đầu ra (Playback Device) là tên màn hình/máy chiếu (HDMI Output) hoặc ngõ âm thanh ngoài thay vì loa mặc định (Speakers).\n3. Kiểm tra xem nút bật/tắt (Mute) trên bộ Mixer phòng học hoặc âm lượng trên máy tính có đang bị tắt hay không."
+    }
+];
+
+const DEFAULT_QUICKLINKS = [
+    { id: "link-1", title: "Trang học trực tuyến LMS", url: "https://lms.congty.edu.vn" },
+    { id: "link-2", title: "Quản trị Zoom Meeting", url: "https://zoom.us" },
+    { id: "link-3", title: "Kho giáo trình Google Drive", url: "https://drive.google.com" },
+    { id: "link-4", title: "Trang chủ Vercel Deployment", url: "https://vercel.com" }
+];

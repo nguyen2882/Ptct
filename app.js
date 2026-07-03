@@ -6,6 +6,8 @@ let state = {
     tasks: [],
     members: [],
     guidelines: [],
+    issues: [],
+    quicklinks: [],
     theme: "light",
     activePage: "dashboard",
     filters: {
@@ -13,18 +15,24 @@ let state = {
         assignee: "all",
         type: "all",
         priority: "all"
+    },
+    issueFilters: {
+        search: "",
+        dept: "all"
     }
 };
 
 // Khởi tạo và tải dữ liệu từ localStorage
 function initApp() {
     // 0. Kiểm tra phiên bản dữ liệu (để tự động chuyển giao sang bộ dữ liệu giáo dục/sự kiện)
-    const DB_VERSION = "4.0";
+    const DB_VERSION = "6.0";
     const savedVersion = localStorage.getItem("itflow_db_version");
     if (savedVersion !== DB_VERSION) {
         localStorage.removeItem("itflow_tasks");
         localStorage.removeItem("itflow_members");
         localStorage.removeItem("itflow_guidelines");
+        localStorage.removeItem("itflow_issues");
+        localStorage.removeItem("itflow_quicklinks");
         localStorage.setItem("itflow_db_version", DB_VERSION);
     }
 
@@ -60,6 +68,22 @@ function initApp() {
         localStorage.setItem("itflow_tasks", JSON.stringify(state.tasks));
     }
 
+    const savedIssues = localStorage.getItem("itflow_issues");
+    if (savedIssues) {
+        state.issues = JSON.parse(savedIssues);
+    } else {
+        state.issues = [...DEFAULT_ISSUES];
+        localStorage.setItem("itflow_issues", JSON.stringify(state.issues));
+    }
+
+    const savedQuicklinks = localStorage.getItem("itflow_quicklinks");
+    if (savedQuicklinks) {
+        state.quicklinks = JSON.parse(savedQuicklinks);
+    } else {
+        state.quicklinks = [...DEFAULT_QUICKLINKS];
+        localStorage.setItem("itflow_quicklinks", JSON.stringify(state.quicklinks));
+    }
+
     // 3. Thiết lập giao diện ban đầu
     setupEventListeners();
     updateNavigation();
@@ -77,6 +101,12 @@ function saveState(key) {
     }
     if (key === "guidelines" || !key) {
         localStorage.setItem("itflow_guidelines", JSON.stringify(state.guidelines));
+    }
+    if (key === "issues" || !key) {
+        localStorage.setItem("itflow_issues", JSON.stringify(state.issues));
+    }
+    if (key === "quicklinks" || !key) {
+        localStorage.setItem("itflow_quicklinks", JSON.stringify(state.quicklinks));
     }
 }
 
@@ -131,6 +161,9 @@ function renderAll() {
     renderKanbanBoard();
     renderGuidelinesMenu();
     renderTeamMembers();
+    renderIssues();
+    renderQuickLinks();
+    renderDashboardIssues();
 }
 
 // --- CẬP NHẬT STATS TRÊN DASHBOARD ---
@@ -482,6 +515,29 @@ function setupEventListeners() {
     // Form thêm thành viên
     document.getElementById("form-add-member").addEventListener("submit", handleAddMemberSubmit);
     document.getElementById("btn-cancel-member-edit").addEventListener("click", cancelMemberEdit);
+
+    // Sổ tay sự cố (Troubleshooting)
+    document.getElementById("btn-add-issue").addEventListener("click", () => openIssueModal());
+    document.getElementById("btn-close-issue-modal").addEventListener("click", closeIssueModal);
+    document.getElementById("btn-cancel-issue-modal").addEventListener("click", closeIssueModal);
+    document.getElementById("form-issue").addEventListener("submit", handleIssueFormSubmit);
+    document.getElementById("issue-search").addEventListener("input", (e) => {
+        state.issueFilters.search = e.target.value;
+        renderIssues();
+    });
+    document.getElementById("filter-issue-dept").addEventListener("change", (e) => {
+        state.issueFilters.dept = e.target.value;
+        renderIssues();
+    });
+    // Liên kết nhanh (Quick Links)
+    document.getElementById("btn-add-quicklink").addEventListener("click", () => openQuickLinkModal());
+    document.getElementById("btn-close-quicklink-modal").addEventListener("click", closeQuickLinkModal);
+    document.getElementById("btn-cancel-quicklink-modal").addEventListener("click", closeQuickLinkModal);
+    document.getElementById("form-quicklink").addEventListener("submit", handleQuickLinkSubmit);
+
+    // Xem chi tiết sự cố trên Dashboard
+    document.getElementById("btn-close-issue-detail-modal").addEventListener("click", closeIssueDetailModal);
+    document.getElementById("btn-close-issue-detail-footer").addEventListener("click", closeIssueDetailModal);
 
     // Backup & Restore
     document.getElementById("btn-export-data").addEventListener("click", exportData);
@@ -1296,12 +1352,280 @@ function deleteMember(memberId) {
     }
 }
 
+// ----------------- 9.5. SỔ TAY SỰ CỐ THƯỜNG GẶP -----------------
+function renderIssues() {
+    const grid = document.getElementById("issues-grid");
+    if (!grid) return;
+    grid.innerHTML = "";
+
+    const filteredIssues = state.issues.filter(issue => {
+        const matchSearch = state.issueFilters.search === "" ||
+            issue.title.toLowerCase().includes(state.issueFilters.search.toLowerCase()) ||
+            issue.symptom.toLowerCase().includes(state.issueFilters.search.toLowerCase()) ||
+            issue.solution.toLowerCase().includes(state.issueFilters.search.toLowerCase());
+
+        const matchDept = state.issueFilters.dept === "all" || issue.dept === state.issueFilters.dept;
+
+        return matchSearch && matchDept;
+    });
+
+    if (filteredIssues.length === 0) {
+        grid.innerHTML = `
+            <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--text-muted); font-size: 14px;">
+                <i class="fa-solid fa-triangle-exclamation" style="font-size: 32px; margin-bottom: 12px; display: block; color: var(--color-warning);"></i>
+                Không tìm thấy sự cố nào phù hợp!
+            </div>
+        `;
+        return;
+    }
+
+    filteredIssues.forEach(issue => {
+        const card = document.createElement("div");
+        card.className = "issue-card";
+        
+        const deptLabel = issue.dept === "company_tech" ? "Kỹ thuật Công ty" : "Kỹ thuật Sự kiện";
+        const deptClass = issue.dept === "company_tech" ? "tech" : "collective";
+
+        card.innerHTML = `
+            <div class="issue-header">
+                <span class="tag ${deptClass}">${deptLabel}</span>
+                <div style="display: flex; gap: 4px;">
+                    <button class="card-btn edit-btn" onclick="openIssueModal('${issue.id}')" title="Sửa sự cố">
+                        <i class="fa-solid fa-pen"></i>
+                    </button>
+                    <button class="card-btn delete-btn" onclick="deleteIssue('${issue.id}')" title="Xóa sự cố">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                </div>
+            </div>
+            <h3 class="issue-title">${issue.title}</h3>
+            
+            <div class="issue-section">
+                <span class="issue-section-title"><i class="fa-solid fa-circle-info"></i> Hiện tượng nhận biết</span>
+                <div class="issue-symptom">${issue.symptom}</div>
+            </div>
+            
+            <div class="issue-section">
+                <span class="issue-section-title"><i class="fa-solid fa-circle-check"></i> Hướng dẫn khắc phục</span>
+                <div class="issue-solution">${issue.solution}</div>
+            </div>
+        `;
+        grid.appendChild(card);
+    });
+}
+
+function openIssueModal(issueId = null) {
+    const modal = document.getElementById("modal-issue");
+    const form = document.getElementById("form-issue");
+    const titleEl = document.getElementById("issue-modal-title");
+
+    form.reset();
+
+    if (issueId) {
+        titleEl.innerText = "Chỉnh sửa sự cố";
+        const issue = state.issues.find(i => i.id === issueId);
+        if (issue) {
+            document.getElementById("issue-id").value = issue.id;
+            document.getElementById("issue-title-input").value = issue.title;
+            document.getElementById("issue-dept-input").value = issue.dept;
+            document.getElementById("issue-symptom-input").value = issue.symptom;
+            document.getElementById("issue-solution-input").value = issue.solution;
+        }
+    } else {
+        titleEl.innerText = "Thêm sự cố thường gặp";
+        document.getElementById("issue-id").value = "";
+    }
+
+    modal.classList.add("active");
+}
+
+function closeIssueModal() {
+    document.getElementById("modal-issue").classList.remove("active");
+}
+
+function handleIssueFormSubmit(e) {
+    e.preventDefault();
+
+    const id = document.getElementById("issue-id").value;
+    const title = document.getElementById("issue-title-input").value.trim();
+    const dept = document.getElementById("issue-dept-input").value;
+    const symptom = document.getElementById("issue-symptom-input").value.trim();
+    const solution = document.getElementById("issue-solution-input").value.trim();
+
+    if (id) {
+        // Edit mode
+        const idx = state.issues.findIndex(i => i.id === id);
+        if (idx !== -1) {
+            state.issues[idx] = {
+                ...state.issues[idx],
+                title,
+                dept,
+                symptom,
+                solution
+            };
+            saveState("issues");
+        }
+    } else {
+        // Create mode
+        const newIssue = {
+            id: "issue-" + Date.now(),
+            title,
+            dept,
+            symptom,
+            solution
+        };
+        state.issues.push(newIssue);
+        saveState("issues");
+    }
+
+    closeIssueModal();
+    renderIssues();
+}
+
+function deleteIssue(issueId) {
+    if (confirm("Bạn có chắc chắn muốn xóa sự cố này khỏi sổ tay không?")) {
+        state.issues = state.issues.filter(i => i.id !== issueId);
+        saveState("issues");
+        renderIssues();
+    }
+}
+
+// ----------------- 9.6. RENDER LIÊN KẾT NHANH & SỰ CỐ DASHBOARD -----------------
+function renderQuickLinks() {
+    const container = document.getElementById("quicklinks-container");
+    if (!container) return;
+    container.innerHTML = "";
+
+    if (state.quicklinks.length === 0) {
+        container.innerHTML = `
+            <div style="text-align: center; padding: 16px; color: var(--text-muted); font-size: 12px;">
+                Chưa có liên kết nhanh nào. Bấm "+" để thêm!
+            </div>
+        `;
+        return;
+    }
+
+    state.quicklinks.forEach(link => {
+        const item = document.createElement("div");
+        item.className = "quicklink-item";
+        item.innerHTML = `
+            <a href="${link.url}" target="_blank" class="quicklink-item-left" style="color: inherit; text-decoration: none; display: flex; align-items: center; gap: 8px; width: 100%;">
+                <i class="fa-solid fa-earth-asia"></i>
+                <span>${link.title}</span>
+            </a>
+            <button class="quicklink-delete-btn" onclick="deleteQuickLink('${link.id}', event)" title="Xóa liên kết">
+                <i class="fa-solid fa-trash-can"></i>
+            </button>
+        `;
+        container.appendChild(item);
+    });
+}
+
+function renderDashboardIssues() {
+    const container = document.getElementById("dashboard-issues-container");
+    if (!container) return;
+    container.innerHTML = "";
+
+    const keyIssues = state.issues.slice(0, 4); // Lấy tối đa 4 lỗi sự cố đầu tiên
+
+    if (keyIssues.length === 0) {
+        container.innerHTML = `
+            <div style="text-align: center; padding: 16px; color: var(--text-muted); font-size: 12px;">
+                Chưa có sự cố nào được ghi nhận.
+            </div>
+        `;
+        return;
+    }
+
+    keyIssues.forEach(issue => {
+        const item = document.createElement("div");
+        item.className = "dashboard-issue-item";
+        item.onclick = () => openIssueDetailModal(issue.id);
+        item.innerHTML = `
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <i class="fa-solid fa-circle-exclamation" style="color: ${issue.dept === 'company_tech' ? 'var(--color-info)' : 'var(--color-warning)'};"></i>
+                <span class="issue-item-title">${issue.title}</span>
+            </div>
+            <i class="fa-solid fa-chevron-right" style="font-size: 10px; color: var(--text-muted);"></i>
+        `;
+        container.appendChild(item);
+    });
+}
+
+function openQuickLinkModal() {
+    const modal = document.getElementById("modal-quicklink");
+    const form = document.getElementById("form-quicklink");
+    if (form) form.reset();
+    if (modal) modal.classList.add("active");
+}
+
+function closeQuickLinkModal() {
+    const modal = document.getElementById("modal-quicklink");
+    if (modal) modal.classList.remove("active");
+}
+
+function handleQuickLinkSubmit(e) {
+    e.preventDefault();
+    const title = document.getElementById("link-title").value.trim();
+    const url = document.getElementById("link-url").value.trim();
+
+    if (title && url) {
+        const newLink = {
+            id: "link-" + Date.now(),
+            title,
+            url
+        };
+        state.quicklinks.push(newLink);
+        saveState("quicklinks");
+        renderQuickLinks();
+        closeQuickLinkModal();
+    }
+}
+
+function deleteQuickLink(linkId, event) {
+    if (event) event.stopPropagation(); // Ngăn mở liên kết
+    if (confirm("Bạn có chắc chắn muốn xóa liên kết nhanh này không?")) {
+        state.quicklinks = state.quicklinks.filter(l => l.id !== linkId);
+        saveState("quicklinks");
+        renderQuickLinks();
+    }
+}
+
+function openIssueDetailModal(issueId) {
+    const modal = document.getElementById("modal-issue-detail");
+    const issue = state.issues.find(i => i.id === issueId);
+    if (!issue) return;
+
+    document.getElementById("issue-detail-title").innerText = issue.title;
+    
+    const deptTag = document.getElementById("issue-detail-dept-tag");
+    deptTag.innerText = issue.dept === "company_tech" ? "Kỹ thuật Công ty" : "Kỹ thuật Sự kiện";
+    deptTag.className = "tag " + (issue.dept === "company_tech" ? "tech" : "collective");
+
+    document.getElementById("issue-detail-symptom").innerText = issue.symptom;
+    document.getElementById("issue-detail-solution").innerText = issue.solution;
+
+    if (modal) modal.classList.add("active");
+}
+
+function closeIssueDetailModal() {
+    const modal = document.getElementById("modal-issue-detail");
+    if (modal) modal.classList.remove("active");
+}
+
+// Gắn các hàm tương tác inline vào window
+window.deleteQuickLink = deleteQuickLink;
+window.openIssueDetailModal = openIssueDetailModal;
+window.closeIssueDetailModal = closeIssueDetailModal;
+
 // ----------------- 10. NHẬP / XUẤT SAO LƯU JSON & RESET DATABASE -----------------
 function exportData() {
     const dataStr = JSON.stringify({
         tasks: state.tasks,
         members: state.members,
-        guidelines: state.guidelines
+        guidelines: state.guidelines,
+        issues: state.issues,
+        quicklinks: state.quicklinks
     }, null, 2);
     
     const blob = new Blob([dataStr], { type: "application/json" });
@@ -1328,10 +1652,18 @@ function importData(e) {
                 state.tasks = data.tasks;
                 state.members = data.members;
                 state.guidelines = data.guidelines;
+                if (data.issues) {
+                    state.issues = data.issues;
+                }
+                if (data.quicklinks) {
+                    state.quicklinks = data.quicklinks;
+                }
 
                 saveState("tasks");
                 saveState("members");
                 saveState("guidelines");
+                saveState("issues");
+                saveState("quicklinks");
 
                 alert("Nhập dữ liệu thành công! Ứng dụng sẽ tải lại trang.");
                 window.location.reload();
@@ -1350,7 +1682,10 @@ function resetDatabase() {
         localStorage.removeItem("itflow_tasks");
         localStorage.removeItem("itflow_members");
         localStorage.removeItem("itflow_guidelines");
+        localStorage.removeItem("itflow_issues");
+        localStorage.removeItem("itflow_quicklinks");
         localStorage.removeItem("itflow_theme");
+        localStorage.removeItem("itflow_db_version");
         alert("Đã đặt lại dữ liệu thành công. Trang sẽ tự động tải lại!");
         window.location.reload();
     }
