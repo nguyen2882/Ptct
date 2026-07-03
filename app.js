@@ -1512,13 +1512,18 @@ function renderQuickLinks() {
         const item = document.createElement("div");
         item.className = "quicklink-item";
         item.innerHTML = `
-            <a href="${link.url}" target="_blank" class="quicklink-item-left" style="color: inherit; text-decoration: none; display: flex; align-items: center; gap: 8px; width: 100%;">
+            <a href="${link.url}" target="_blank" class="quicklink-item-left" style="color: inherit; text-decoration: none; display: flex; align-items: center; gap: 8px; width: calc(100% - 60px);">
                 <i class="fa-solid fa-earth-asia"></i>
                 <span>${link.title}</span>
             </a>
-            <button class="quicklink-delete-btn" onclick="deleteQuickLink('${link.id}', event)" title="Xóa liên kết">
-                <i class="fa-solid fa-trash-can"></i>
-            </button>
+            <div style="display: flex; align-items: center;">
+                <button class="quicklink-edit-btn" onclick="openQuickLinkModal('${link.id}', event)" title="Sửa liên kết">
+                    <i class="fa-solid fa-pen"></i>
+                </button>
+                <button class="quicklink-delete-btn" onclick="deleteQuickLink('${link.id}', event)" title="Xóa liên kết">
+                    <i class="fa-solid fa-trash-can"></i>
+                </button>
+            </div>
         `;
         container.appendChild(item);
     });
@@ -1555,10 +1560,28 @@ function renderDashboardIssues() {
     });
 }
 
-function openQuickLinkModal() {
+function openQuickLinkModal(linkId = null, event = null) {
+    if (event) event.stopPropagation();
     const modal = document.getElementById("modal-quicklink");
     const form = document.getElementById("form-quicklink");
+    const modalTitle = document.getElementById("quicklink-modal-title");
+
     if (form) form.reset();
+
+    if (linkId) {
+        if (modalTitle) modalTitle.innerText = "Chỉnh sửa liên kết";
+        const link = state.quicklinks.find(l => l.id === linkId);
+        if (link) {
+            document.getElementById("quicklink-id").value = link.id;
+            document.getElementById("link-title").value = link.title;
+            document.getElementById("link-url").value = link.url;
+            document.getElementById("link-desc").value = link.description || "";
+        }
+    } else {
+        if (modalTitle) modalTitle.innerText = "Thêm liên kết hỗ trợ";
+        document.getElementById("quicklink-id").value = "";
+    }
+
     if (modal) modal.classList.add("active");
 }
 
@@ -1569,16 +1592,34 @@ function closeQuickLinkModal() {
 
 function handleQuickLinkSubmit(e) {
     e.preventDefault();
+    const id = document.getElementById("quicklink-id").value;
     const title = document.getElementById("link-title").value.trim();
     const url = document.getElementById("link-url").value.trim();
+    const description = document.getElementById("link-desc").value.trim();
 
     if (title && url) {
-        const newLink = {
-            id: "link-" + Date.now(),
-            title,
-            url
-        };
-        state.quicklinks.push(newLink);
+        if (id) {
+            // Edit Mode
+            const idx = state.quicklinks.findIndex(l => l.id === id);
+            if (idx !== -1) {
+                state.quicklinks[idx] = {
+                    ...state.quicklinks[idx],
+                    title,
+                    url,
+                    description
+                };
+            }
+        } else {
+            // Create Mode
+            const newLink = {
+                id: "link-" + Date.now(),
+                title,
+                url,
+                description
+            };
+            state.quicklinks.push(newLink);
+        }
+        
         saveState("quicklinks");
         renderQuickLinks();
         closeQuickLinkModal();
@@ -1618,6 +1659,7 @@ function closeIssueDetailModal() {
 
 // Gắn các hàm tương tác inline vào window
 window.deleteQuickLink = deleteQuickLink;
+window.openQuickLinkModal = openQuickLinkModal;
 window.openIssueDetailModal = openIssueDetailModal;
 window.closeIssueDetailModal = closeIssueDetailModal;
 

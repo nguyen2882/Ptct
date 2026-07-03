@@ -1535,6 +1535,28 @@ header {
     background-color: var(--color-danger-light);
 }
 
+.quicklink-edit-btn {
+    opacity: 0;
+    color: var(--text-muted);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 12px;
+    padding: 2px 6px;
+    transition: var(--transition);
+    border-radius: var(--radius-sm);
+    margin-right: 4px;
+}
+
+.quicklink-item:hover .quicklink-edit-btn {
+    opacity: 1;
+}
+
+.quicklink-edit-btn:hover {
+    color: var(--color-primary);
+    background-color: var(--color-primary-light);
+}
+
 /* Dashboard Issues Styles */
 .dashboard-issue-item {
     display: flex;
