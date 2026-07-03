@@ -1595,6 +1595,16 @@ header {
     color: var(--color-primary) !important;
 }
 
+.quicklink-sub-item::before {
+    content: '';
+    position: absolute;
+    left: -18px;
+    top: 50%;
+    width: 18px;
+    border-top: 1px dashed var(--border-glass);
+    pointer-events: none;
+}
+
 .quicklink-sub-edit-btn,
 .quicklink-sub-delete-btn {
     opacity: 0;
