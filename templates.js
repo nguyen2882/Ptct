@@ -226,8 +226,8 @@ const DEFAULT_ISSUES = [
 ];
 
 const DEFAULT_QUICKLINKS = [
-    { id: "link-1", title: "Trang học trực tuyến LMS", url: "https://lms.congty.edu.vn" },
-    { id: "link-2", title: "Quản trị Zoom Meeting", url: "https://zoom.us" },
-    { id: "link-3", title: "Kho giáo trình Google Drive", url: "https://drive.google.com" },
-    { id: "link-4", title: "Trang chủ Vercel Deployment", url: "https://vercel.com" }
+    { id: "link-1", title: "Trang học trực tuyến LMS", url: "https://lms.congty.edu.vn", description: "Hệ thống quản lý học tập trực tuyến dành cho học viên và giáo viên." },
+    { id: "link-2", title: "Quản trị Zoom Meeting", url: "https://zoom.us", description: "Cổng cấu hình phòng học Zoom trực tuyến, passcode và phân quyền giảng dạy." },
+    { id: "link-3", title: "Kho giáo trình Google Drive", url: "https://drive.google.com", description: "Lưu trữ tài liệu học tập, giáo án và slide bài giảng các khóa học." },
+    { id: "link-4", title: "Trang chủ Vercel Deployment", url: "https://vercel.com", description: "Nền tảng triển khai và hosting trang quản lý kỹ thuật của phòng ban." }
 ];

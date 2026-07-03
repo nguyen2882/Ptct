@@ -25,7 +25,7 @@ let state = {
 // Khởi tạo và tải dữ liệu từ localStorage
 function initApp() {
     // 0. Kiểm tra phiên bản dữ liệu (để tự động chuyển giao sang bộ dữ liệu giáo dục/sự kiện)
-    const DB_VERSION = "6.0";
+    const DB_VERSION = "7.0";
     const savedVersion = localStorage.getItem("itflow_db_version");
     if (savedVersion !== DB_VERSION) {
         localStorage.removeItem("itflow_tasks");
@@ -164,6 +164,7 @@ function renderAll() {
     renderIssues();
     renderQuickLinks();
     renderDashboardIssues();
+    renderLinkPage();
 }
 
 // --- CẬP NHẬT STATS TRÊN DASHBOARD ---
@@ -531,9 +532,15 @@ function setupEventListeners() {
     });
     // Liên kết nhanh (Quick Links)
     document.getElementById("btn-add-quicklink").addEventListener("click", () => openQuickLinkModal());
+    document.getElementById("btn-add-link-page").addEventListener("click", () => openQuickLinkModal());
     document.getElementById("btn-close-quicklink-modal").addEventListener("click", closeQuickLinkModal);
     document.getElementById("btn-cancel-quicklink-modal").addEventListener("click", closeQuickLinkModal);
     document.getElementById("form-quicklink").addEventListener("submit", handleQuickLinkSubmit);
+
+    // Tìm kiếm liên kết ở trang riêng
+    document.getElementById("link-page-search").addEventListener("input", (e) => {
+        renderLinkPage(e.target.value);
+    });
 
     // Xem chi tiết sự cố trên Dashboard
     document.getElementById("btn-close-issue-detail-modal").addEventListener("click", closeIssueDetailModal);
@@ -1489,6 +1496,9 @@ function deleteIssue(issueId) {
         renderIssues();
     }
 }
+
+window.openIssueModal = openIssueModal;
+window.deleteIssue = deleteIssue;
 
 // ----------------- 9.6. RENDER LIÊN KẾT NHANH & SỰ CỐ DASHBOARD -----------------
 function renderQuickLinks() {

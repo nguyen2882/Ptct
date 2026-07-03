@@ -47,7 +47,13 @@
             <li id="nav-issues">
                 <a href="#issues">
                     <i class="fa-solid fa-triangle-exclamation"></i>
-                    <span>Lỗi thường gặp</span>
+                    <span>Các lỗi hay gặp khi hỗ trợ</span>
+                </a>
+            </li>
+            <li id="nav-links-page">
+                <a href="#links-page">
+                    <i class="fa-solid fa-link"></i>
+                    <span>Các đường link dùng hỗ trợ</span>
                 </a>
             </li>
         </ul>
@@ -428,6 +434,32 @@
                 <!-- JS renders issues card here -->
             </div>
         </section>
+
+        <!-- PAGE 6: SUPPORT LINKS MANAGEMENT -->
+        <section id="page-links-page" class="page-container">
+            <div class="page-header">
+                <div class="page-title">
+                    <h2>Các đường link dùng hỗ trợ</h2>
+                    <p>Danh sách các trang web, liên kết tài nguyên hỗ trợ công việc kỹ thuật & sự kiện.</p>
+                </div>
+                <button class="btn btn-primary" id="btn-add-link-page">
+                    <i class="fa-solid fa-plus"></i> Thêm liên kết mới
+                </button>
+            </div>
+
+            <!-- Filters -->
+            <div class="board-filters">
+                <div class="header-search" style="margin: 0; width: 280px; border-radius: var(--radius-md); border-color: var(--border-glass);">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="link-page-search" placeholder="Tìm kiếm liên kết...">
+                </div>
+            </div>
+
+            <!-- Links Grid -->
+            <div class="issues-grid" id="link-page-grid">
+                <!-- JS renders links here -->
+            </div>
+        </section>
     </main>
 
     <!-- MODAL: ADD / EDIT TASK -->
@@ -640,14 +672,15 @@
         </div>
     </div>
 
-    <!-- MODAL: ADD QUICK LINK -->
+    <!-- MODAL: ADD / EDIT QUICK LINK -->
     <div class="modal-overlay" id="modal-quicklink">
-        <div class="modal-content" style="max-width: 400px;">
+        <div class="modal-content" style="max-width: 450px;">
             <div class="modal-header">
-                <h3>Thêm liên kết nhanh</h3>
+                <h3 id="quicklink-modal-title">Thêm liên kết hỗ trợ</h3>
                 <button class="close-btn" id="btn-close-quicklink-modal">&times;</button>
             </div>
             <form id="form-quicklink">
+                <input type="hidden" id="quicklink-id">
                 <div class="modal-body" style="padding: 20px; display: flex; flex-direction: column; gap: 16px;">
                     <div class="form-group">
                         <label class="form-label" for="link-title">Tên liên kết *</label>
@@ -657,10 +690,14 @@
                         <label class="form-label" for="link-url">Địa chỉ URL *</label>
                         <input class="form-input" id="link-url" type="url" placeholder="Ví dụ: https://lms.congty.edu.vn" required>
                     </div>
+                    <div class="form-group">
+                        <label class="form-label" for="link-desc">Mô tả ngắn</label>
+                        <input class="form-input" id="link-desc" type="text" placeholder="Ví dụ: Dùng để cấu hình tài khoản học viên và lớp học">
+                    </div>
                 </div>
                 <div class="modal-footer" style="padding: 16px 20px;">
                     <button type="button" class="btn btn-secondary" id="btn-cancel-quicklink-modal">Hủy</button>
-                    <button type="submit" class="btn btn-primary">Thêm</button>
+                    <button type="submit" class="btn btn-primary">Lưu liên kết</button>
                 </div>
             </form>
         </div>
