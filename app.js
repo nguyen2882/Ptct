@@ -164,7 +164,6 @@ function renderAll() {
     renderIssues();
     renderQuickLinks();
     renderDashboardIssues();
-    renderLinkPage();
 }
 
 // --- CẬP NHẬT STATS TRÊN DASHBOARD ---
@@ -532,15 +531,9 @@ function setupEventListeners() {
     });
     // Liên kết nhanh (Quick Links)
     document.getElementById("btn-add-quicklink").addEventListener("click", () => openQuickLinkModal());
-    document.getElementById("btn-add-link-page").addEventListener("click", () => openQuickLinkModal());
     document.getElementById("btn-close-quicklink-modal").addEventListener("click", closeQuickLinkModal);
     document.getElementById("btn-cancel-quicklink-modal").addEventListener("click", closeQuickLinkModal);
     document.getElementById("form-quicklink").addEventListener("submit", handleQuickLinkSubmit);
-
-    // Tìm kiếm liên kết ở trang riêng
-    document.getElementById("link-page-search").addEventListener("input", (e) => {
-        renderLinkPage(e.target.value);
-    });
 
     // Xem chi tiết sự cố trên Dashboard
     document.getElementById("btn-close-issue-detail-modal").addEventListener("click", closeIssueDetailModal);
