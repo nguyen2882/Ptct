@@ -640,7 +640,7 @@ header {
     transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 8px;
     user-select: none;
 }
 

@@ -332,27 +332,26 @@ function createTaskCardDOM(task, isDraggable = true) {
         </div>
         ` : ''}
 
-        <div class="card-footer">
+        <div class="card-footer" style="display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--border-glass); padding-top: 10px; margin-top: 2px;">
             <span class="${dateClass}">
                 <i class="fa-regular fa-calendar"></i>
                 ${formatDate(task.dueDate)} ${isOverdue ? '(Trễ hạn)' : ''}
             </span>
-            <div class="card-assignee" title="${assigneeName}">
-                <div class="assignee-avatar">${assigneeAvatar}</div>
-            </div>
-        </div>
-        
-        <div class="card-footer" style="border: none; padding-top: 0; margin-top: 0; justify-content: flex-end;">
-            <div class="card-actions">
-                <button class="card-btn edit-btn" onclick="openTaskModal('${task.id}')" title="Sửa công việc">
-                    <i class="fa-solid fa-pen"></i>
-                </button>
-                <button class="card-btn delete-btn" onclick="deleteTask('${task.id}')" title="Xóa công việc">
-                    <i class="fa-solid fa-trash-can"></i>
-                </button>
-                <button class="card-btn" onclick="viewTaskDetail('${task.id}')" style="background-color: var(--color-primary-light); color: var(--color-primary); font-weight: bold; width: auto; padding: 0 8px;" title="Xem chi tiết">
-                    Chi tiết
-                </button>
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <div class="card-actions" style="margin-right: 4px; display: flex; align-items: center; gap: 4px;">
+                    <button class="card-btn edit-btn" onclick="openTaskModal('${task.id}')" title="Sửa công việc">
+                        <i class="fa-solid fa-pen"></i>
+                    </button>
+                    <button class="card-btn delete-btn" onclick="deleteTask('${task.id}')" title="Xóa công việc">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                    <button class="card-btn" onclick="viewTaskDetail('${task.id}')" style="background-color: var(--color-primary-light); color: var(--color-primary); font-weight: bold; width: auto; padding: 2px 8px; font-size: 11px; border-radius: var(--radius-sm); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; height: 24px;" title="Xem chi tiết">
+                        Chi tiết
+                    </button>
+                </div>
+                <div class="card-assignee" title="${assigneeName}">
+                    <div class="assignee-avatar">${assigneeAvatar}</div>
+                </div>
             </div>
         </div>
     `;
@@ -1609,26 +1608,35 @@ window.deleteIssue = deleteIssue;
 // ----------------- 9.6. RENDER LIÊN KẾT NHANH & SỰ CỐ DASHBOARD -----------------
 function getLinkBrandDetails(title = "", url = "") {
     const key = (title + " " + url).toLowerCase();
-    if (key.includes("lms")) {
-        return { icon: "fa-solid fa-graduation-cap", color: "#6366f1", bg: "rgba(99, 102, 241, 0.1)" };
-    }
     if (key.includes("zoom")) {
         return { icon: "fa-solid fa-video", color: "#2d8cff", bg: "rgba(45, 140, 255, 0.1)" };
     }
-    if (key.includes("drive") || key.includes("google")) {
+    if (key.includes("drive") || key.includes("google") || key.includes("giáo trình")) {
         return { icon: "fa-brands fa-google-drive", color: "#34a853", bg: "rgba(52, 168, 83, 0.1)" };
+    }
+    if (key.includes("lms") || key.includes("học trực tuyến")) {
+        return { icon: "fa-solid fa-graduation-cap", color: "#6366f1", bg: "rgba(99, 102, 241, 0.1)" };
     }
     if (key.includes("vercel")) {
         return { icon: "fa-solid fa-triangle", color: "#a855f7", bg: "rgba(168, 85, 247, 0.1)" };
     }
-    if (key.includes("novastars")) {
-        return { icon: "fa-solid fa-star", color: "#eab308", bg: "rgba(234, 179, 8, 0.1)" };
-    }
-    if (key.includes("outlook") || key.includes("mail") || key.includes("email")) {
+    if (key.includes("outlook") || key.includes("tk outlook")) {
         return { icon: "fa-solid fa-envelope-open-text", color: "#0078d4", bg: "rgba(0, 120, 212, 0.1)" };
     }
-    if (key.includes("xuat-bai") || key.includes("xuat")) {
-        return { icon: "fa-solid fa-file-export", color: "#ec4899", bg: "rgba(236, 72, 153, 0.1)" };
+    if (key.includes("email cleaner") || key.includes("cleaner") || key.includes("emailcleaner")) {
+        return { icon: "fa-solid fa-broom", color: "#ec4899", bg: "rgba(236, 72, 153, 0.1)" };
+    }
+    if (key.includes("xuất bài") || key.includes("xuat-bai") || key.includes("xuất bản")) {
+        return { icon: "fa-solid fa-file-export", color: "#8b5cf6", bg: "rgba(139, 92, 246, 0.1)" };
+    }
+    if (key.includes("tài khoản") || key.includes("account")) {
+        return { icon: "fa-solid fa-user-gear", color: "#0ea5e9", bg: "rgba(14, 165, 233, 0.1)" };
+    }
+    if (key.includes("synology") || key.includes("nas") || key.includes("cloud")) {
+        return { icon: "fa-solid fa-server", color: "#64748b", bg: "rgba(100, 116, 139, 0.1)" };
+    }
+    if (key.includes("novastars")) {
+        return { icon: "fa-solid fa-star", color: "#eab308", bg: "rgba(234, 179, 8, 0.1)" };
     }
     return { icon: "fa-solid fa-earth-asia", color: "#14b8a6", bg: "rgba(20, 184, 166, 0.1)" };
 }
@@ -1671,8 +1679,7 @@ function renderQuickLinks() {
         if (hasSublinks) {
             content = `
                 <div class="quicklink-item" onclick="toggleSublinks('${link.id}', event)" style="cursor: pointer; display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 6px 10px;" title="${link.description || ''}">
-                    <div class="quicklink-item-left" style="width: calc(100% - 50px); display: flex; align-items: center; gap: 4px;">
-                        <i class="fa-solid fa-chevron-right sublinks-toggle-icon" id="toggle-icon-${link.id}" style="transition: transform 0.2s; font-size: 8px; color: var(--text-muted); margin-right: 2px;"></i>
+                    <div class="quicklink-item-left" style="width: calc(100% - 75px); display: flex; align-items: center; gap: 4px;">
                         <span class="quicklink-icon-wrapper" style="display: flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 6px; background-color: ${iconBg}; color: ${iconColor}; margin-right: 4px; flex-shrink: 0; font-size: 11px;">
                             <i class="${iconClass}"></i>
                         </span>
@@ -1687,9 +1694,10 @@ function renderQuickLinks() {
                         <button class="quicklink-delete-btn" onclick="deleteQuickLink('${link.id}', event)" title="Xóa liên kết">
                             <i class="fa-solid fa-trash-can"></i>
                         </button>
+                        <i class="fa-solid fa-chevron-down sublinks-toggle-icon" id="toggle-icon-${link.id}" style="transition: transform 0.2s; font-size: 8px; color: var(--text-muted); margin-left: 4px; padding-right: 2px;"></i>
                     </div>
                 </div>
-                <div class="quicklink-sublinks-container" id="sublinks-${link.id}" style="display: none; padding-left: 14px; margin-left: 21px; border-left: 1px dashed var(--border-glass); margin-top: 4px; flex-direction: column; gap: 4px; margin-bottom: 6px;">
+                <div class="quicklink-sublinks-container" id="sublinks-${link.id}" style="display: none; padding-left: 14px; margin-left: 23px; border-left: 1px dashed var(--border-glass); margin-top: 4px; flex-direction: column; gap: 4px; margin-bottom: 6px;">
                     ${link.sublinks.map(sub => `
                         <div class="quicklink-sub-item" style="display: flex; align-items: center; justify-content: space-between; padding: 6px 10px; background-color: var(--bg-secondary); border: 1px solid var(--border-glass); border-radius: var(--radius-md); font-size: 11px; transition: var(--transition); position: relative;">
                             <a href="${sub.url}" target="_blank" style="color: inherit; text-decoration: none; display: flex; align-items: center; gap: 6px; width: calc(100% - 40px); font-weight: 500; text-align: left;">
@@ -1743,7 +1751,7 @@ function toggleSublinks(linkId, event) {
     if (subContainer && toggleIcon) {
         const isCollapsed = subContainer.style.display === "none";
         subContainer.style.display = isCollapsed ? "flex" : "none";
-        toggleIcon.style.transform = isCollapsed ? "rotate(90deg)" : "rotate(0deg)";
+        toggleIcon.style.transform = isCollapsed ? "rotate(180deg)" : "rotate(0deg)";
     }
 }
 
