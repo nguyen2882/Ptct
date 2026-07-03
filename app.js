@@ -1539,10 +1539,18 @@ function renderQuickLinks() {
                 <div class="quicklink-sublinks-container" id="sublinks-${link.id}" style="display: none; padding-left: 20px; margin-top: 4px; flex-direction: column; gap: 6px; margin-bottom: 6px;">
                     ${link.sublinks.map(sub => `
                         <div class="quicklink-sub-item" style="display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; background-color: var(--bg-tertiary); border: 1px solid var(--border-glass); border-radius: var(--radius-sm); font-size: 12px; transition: var(--transition);">
-                            <a href="${sub.url}" target="_blank" style="color: inherit; text-decoration: none; display: flex; align-items: center; gap: 8px; width: 100%; font-weight: 500;">
+                            <a href="${sub.url}" target="_blank" style="color: inherit; text-decoration: none; display: flex; align-items: center; gap: 8px; width: calc(100% - 45px); font-weight: 500;">
                                 <i class="fa-solid fa-link" style="font-size: 10px; color: var(--text-muted);"></i>
                                 <span>${sub.title}</span>
                             </a>
+                            <div style="display: flex; align-items: center; gap: 2px;">
+                                <button class="quicklink-sub-edit-btn" onclick="openQuickLinkModal('${link.id}', event)" title="Sửa lựa chọn">
+                                    <i class="fa-solid fa-pen"></i>
+                                </button>
+                                <button class="quicklink-sub-delete-btn" onclick="deleteSubLink('${link.id}', '${sub.id}', event)" title="Xóa lựa chọn">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </button>
+                            </div>
                         </div>
                     `).join('')}
                 </div>
@@ -1732,6 +1740,26 @@ function deleteQuickLink(linkId, event) {
     }
 }
 
+function deleteSubLink(parentId, subId, event) {
+    if (event) event.stopPropagation(); // Ngăn mở liên kết
+    if (confirm("Bạn có chắc chắn muốn xóa lựa chọn con này không?")) {
+        const parent = state.quicklinks.find(l => l.id === parentId);
+        if (parent && parent.sublinks) {
+            parent.sublinks = parent.sublinks.filter(s => s.id !== subId);
+            saveState("quicklinks");
+            renderQuickLinks();
+            
+            // Giữ cho danh mục cha mở ra để thấy kết quả xóa
+            const subContainer = document.getElementById(`sublinks-${parentId}`);
+            const toggleIcon = document.getElementById(`toggle-icon-${parentId}`);
+            if (subContainer && toggleIcon) {
+                subContainer.style.display = "flex";
+                toggleIcon.style.transform = "rotate(90deg)";
+            }
+        }
+    }
+}
+
 function openIssueDetailModal(issueId) {
     const modal = document.getElementById("modal-issue-detail");
     const issue = state.issues.find(i => i.id === issueId);
@@ -1760,6 +1788,7 @@ window.openQuickLinkModal = openQuickLinkModal;
 window.openIssueDetailModal = openIssueDetailModal;
 window.closeIssueDetailModal = closeIssueDetailModal;
 window.toggleSublinks = toggleSublinks;
+window.deleteSubLink = deleteSubLink;
 
 // ----------------- 10. NHẬP / XUẤT SAO LƯU JSON & RESET DATABASE -----------------
 function exportData() {

@@ -1594,3 +1594,31 @@ header {
     border-color: rgba(99, 102, 241, 0.2) !important;
     color: var(--color-primary) !important;
 }
+
+.quicklink-sub-edit-btn,
+.quicklink-sub-delete-btn {
+    opacity: 0;
+    color: var(--text-muted);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 10px;
+    padding: 2px 4px;
+    transition: var(--transition);
+    border-radius: var(--radius-sm);
+}
+
+.quicklink-sub-item:hover .quicklink-sub-edit-btn,
+.quicklink-sub-item:hover .quicklink-sub-delete-btn {
+    opacity: 1;
+}
+
+.quicklink-sub-edit-btn:hover {
+    color: var(--color-primary);
+    background-color: var(--color-primary-light);
+}
+
+.quicklink-sub-delete-btn:hover {
+    color: var(--color-danger);
+    background-color: var(--color-danger-light);
+}
