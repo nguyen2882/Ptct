@@ -1588,3 +1588,9 @@ header {
 .dashboard-issue-item .fa-chevron-right {
     transition: var(--transition);
 }
+
+.quicklink-sub-item:hover {
+    background-color: var(--color-primary-light) !important;
+    border-color: rgba(99, 102, 241, 0.2) !important;
+    color: var(--color-primary) !important;
+}

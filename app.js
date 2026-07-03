@@ -25,7 +25,7 @@ let state = {
 // Khởi tạo và tải dữ liệu từ localStorage
 function initApp() {
     // 0. Kiểm tra phiên bản dữ liệu (để tự động chuyển giao sang bộ dữ liệu giáo dục/sự kiện)
-    const DB_VERSION = "8.0";
+    const DB_VERSION = "9.0";
     const savedVersion = localStorage.getItem("itflow_db_version");
     if (savedVersion !== DB_VERSION) {
         localStorage.removeItem("itflow_tasks");
@@ -534,6 +534,7 @@ function setupEventListeners() {
     document.getElementById("btn-close-quicklink-modal").addEventListener("click", closeQuickLinkModal);
     document.getElementById("btn-cancel-quicklink-modal").addEventListener("click", closeQuickLinkModal);
     document.getElementById("form-quicklink").addEventListener("submit", handleQuickLinkSubmit);
+    document.getElementById("btn-add-sublink-row").addEventListener("click", () => addSublinkRow());
 
     // Xem chi tiết sự cố trên Dashboard
     document.getElementById("btn-close-issue-detail-modal").addEventListener("click", closeIssueDetailModal);
@@ -1510,23 +1511,95 @@ function renderQuickLinks() {
 
     state.quicklinks.forEach(link => {
         const item = document.createElement("div");
-        item.className = "quicklink-item";
-        item.innerHTML = `
-            <a href="${link.url}" target="_blank" class="quicklink-item-left" style="color: inherit; text-decoration: none; display: flex; align-items: center; gap: 8px; width: calc(100% - 60px);">
-                <i class="fa-solid fa-earth-asia"></i>
-                <span>${link.title}</span>
-            </a>
-            <div style="display: flex; align-items: center;">
-                <button class="quicklink-edit-btn" onclick="openQuickLinkModal('${link.id}', event)" title="Sửa liên kết">
-                    <i class="fa-solid fa-pen"></i>
-                </button>
-                <button class="quicklink-delete-btn" onclick="deleteQuickLink('${link.id}', event)" title="Xóa liên kết">
-                    <i class="fa-solid fa-trash-can"></i>
-                </button>
-            </div>
-        `;
+        item.className = "quicklink-item-wrapper";
+        item.style.display = "flex";
+        item.style.flexDirection = "column";
+        item.style.gap = "4px";
+
+        const hasSublinks = link.sublinks && link.sublinks.length > 0;
+
+        let content = "";
+        if (hasSublinks) {
+            content = `
+                <div class="quicklink-item" onclick="toggleSublinks('${link.id}', event)" style="cursor: pointer; display: flex; align-items: center; justify-content: space-between; width: 100%;">
+                    <div class="quicklink-item-left" style="width: calc(100% - 60px); display: flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-chevron-right sublinks-toggle-icon" id="toggle-icon-${link.id}" style="transition: transform 0.2s; font-size: 10px; color: var(--text-muted);"></i>
+                        <i class="fa-solid fa-folder" style="color: var(--color-primary); font-size: 12px;"></i>
+                        <span>${link.title}</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 4px;">
+                        <button class="quicklink-edit-btn" onclick="openQuickLinkModal('${link.id}', event)" title="Sửa liên kết">
+                            <i class="fa-solid fa-pen"></i>
+                        </button>
+                        <button class="quicklink-delete-btn" onclick="deleteQuickLink('${link.id}', event)" title="Xóa liên kết">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="quicklink-sublinks-container" id="sublinks-${link.id}" style="display: none; padding-left: 20px; margin-top: 4px; flex-direction: column; gap: 6px; margin-bottom: 6px;">
+                    ${link.sublinks.map(sub => `
+                        <div class="quicklink-sub-item" style="display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; background-color: var(--bg-tertiary); border: 1px solid var(--border-glass); border-radius: var(--radius-sm); font-size: 12px; transition: var(--transition);">
+                            <a href="${sub.url}" target="_blank" style="color: inherit; text-decoration: none; display: flex; align-items: center; gap: 8px; width: 100%; font-weight: 500;">
+                                <i class="fa-solid fa-link" style="font-size: 10px; color: var(--text-muted);"></i>
+                                <span>${sub.title}</span>
+                            </a>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        } else {
+            content = `
+                <div class="quicklink-item" style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+                    <a href="${link.url}" target="_blank" class="quicklink-item-left" style="color: inherit; text-decoration: none; display: flex; align-items: center; gap: 8px; width: calc(100% - 60px);">
+                        <i class="fa-solid fa-earth-asia"></i>
+                        <span>${link.title}</span>
+                    </a>
+                    <div style="display: flex; align-items: center; gap: 4px;">
+                        <button class="quicklink-edit-btn" onclick="openQuickLinkModal('${link.id}', event)" title="Sửa liên kết">
+                            <i class="fa-solid fa-pen"></i>
+                        </button>
+                        <button class="quicklink-delete-btn" onclick="deleteQuickLink('${link.id}', event)" title="Xóa liên kết">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        item.innerHTML = content;
         container.appendChild(item);
     });
+}
+
+function toggleSublinks(linkId, event) {
+    if (event) event.stopPropagation();
+    const subContainer = document.getElementById(`sublinks-${linkId}`);
+    const toggleIcon = document.getElementById(`toggle-icon-${linkId}`);
+    if (subContainer && toggleIcon) {
+        const isCollapsed = subContainer.style.display === "none";
+        subContainer.style.display = isCollapsed ? "flex" : "none";
+        toggleIcon.style.transform = isCollapsed ? "rotate(90deg)" : "rotate(0deg)";
+    }
+}
+
+function addSublinkRow(title = "", url = "") {
+    const container = document.getElementById("sublink-rows-container");
+    if (!container) return;
+
+    const row = document.createElement("div");
+    row.className = "sublink-row";
+    row.style.display = "flex";
+    row.style.gap = "8px";
+    row.style.alignItems = "center";
+
+    row.innerHTML = `
+        <input type="text" class="form-input sublink-title" placeholder="Tên lựa chọn (VD: Khối Tiểu học)" value="${title}" style="flex: 1; font-size: 12px; padding: 6px 10px;" required>
+        <input type="url" class="form-input sublink-url" placeholder="Đường link URL" value="${url}" style="flex: 1.5; font-size: 12px; padding: 6px 10px;" required>
+        <button type="button" class="btn-icon delete-sublink-row-btn" style="color: var(--color-danger); width: 28px; height: 28px; border-radius: var(--radius-sm); border: 1px solid var(--border-glass); background: none;" onclick="this.parentElement.remove();">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+    `;
+    container.appendChild(row);
 }
 
 function renderDashboardIssues() {
@@ -1565,8 +1638,10 @@ function openQuickLinkModal(linkId = null, event = null) {
     const modal = document.getElementById("modal-quicklink");
     const form = document.getElementById("form-quicklink");
     const modalTitle = document.getElementById("quicklink-modal-title");
+    const sublinkContainer = document.getElementById("sublink-rows-container");
 
     if (form) form.reset();
+    if (sublinkContainer) sublinkContainer.innerHTML = "";
 
     if (linkId) {
         if (modalTitle) modalTitle.innerText = "Chỉnh sửa liên kết";
@@ -1576,6 +1651,11 @@ function openQuickLinkModal(linkId = null, event = null) {
             document.getElementById("link-title").value = link.title;
             document.getElementById("link-url").value = link.url;
             document.getElementById("link-desc").value = link.description || "";
+            if (link.sublinks && link.sublinks.length > 0) {
+                link.sublinks.forEach(sub => {
+                    addSublinkRow(sub.title, sub.url);
+                });
+            }
         }
     } else {
         if (modalTitle) modalTitle.innerText = "Thêm liên kết hỗ trợ";
@@ -1597,6 +1677,21 @@ function handleQuickLinkSubmit(e) {
     const url = document.getElementById("link-url").value.trim();
     const description = document.getElementById("link-desc").value.trim();
 
+    // Thu thập các liên kết con
+    const sublinkRows = document.querySelectorAll(".sublink-row");
+    const sublinks = [];
+    sublinkRows.forEach(row => {
+        const subTitle = row.querySelector(".sublink-title").value.trim();
+        const subUrl = row.querySelector(".sublink-url").value.trim();
+        if (subTitle && subUrl) {
+            sublinks.push({
+                id: "sub-" + Date.now() + Math.random().toString(36).substr(2, 5),
+                title: subTitle,
+                url: subUrl
+            });
+        }
+    });
+
     if (title && url) {
         if (id) {
             // Edit Mode
@@ -1606,7 +1701,8 @@ function handleQuickLinkSubmit(e) {
                     ...state.quicklinks[idx],
                     title,
                     url,
-                    description
+                    description,
+                    sublinks
                 };
             }
         } else {
@@ -1615,7 +1711,8 @@ function handleQuickLinkSubmit(e) {
                 id: "link-" + Date.now(),
                 title,
                 url,
-                description
+                description,
+                sublinks
             };
             state.quicklinks.push(newLink);
         }
@@ -1662,6 +1759,7 @@ window.deleteQuickLink = deleteQuickLink;
 window.openQuickLinkModal = openQuickLinkModal;
 window.openIssueDetailModal = openIssueDetailModal;
 window.closeIssueDetailModal = closeIssueDetailModal;
+window.toggleSublinks = toggleSublinks;
 
 // ----------------- 10. NHẬP / XUẤT SAO LƯU JSON & RESET DATABASE -----------------
 function exportData() {
