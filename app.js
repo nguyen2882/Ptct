@@ -399,6 +399,9 @@ function updateTaskStatus(taskId, newStatus) {
 
 // ----------------- 5. BỘ LỌC VÀ TÌM KIẾM -----------------
 function setupEventListeners() {
+    // Hỗ trợ dán ảnh Clipboard (Ctrl+V) vào modal sự cố
+    document.addEventListener("paste", handleIssueImagePaste);
+
     // Chuyển trang (Navigation)
     document.querySelectorAll(".nav-links li").forEach(li => {
         li.addEventListener("click", (e) => {
@@ -1506,8 +1509,12 @@ function handleIssueFormSubmit(e) {
 
 function handleIssueImageUpload(input) {
     const file = input.files[0];
-    if (!file) return;
+    if (file) {
+        processFileAndCompress(file, "Đã tải ảnh lên");
+    }
+}
 
+function processFileAndCompress(file, sourceLabel = "Đã tải ảnh lên") {
     const reader = new FileReader();
     reader.onload = function (e) {
         const img = new Image();
@@ -1542,11 +1549,28 @@ function handleIssueImageUpload(input) {
             document.getElementById("issue-image-url").value = "";
             document.getElementById("issue-image-preview").src = dataUrl;
             document.getElementById("issue-image-preview-container").style.display = "block";
-            document.getElementById("issue-image-status").innerText = "Đã tải ảnh lên";
+            document.getElementById("issue-image-status").innerText = sourceLabel;
         };
         img.src = e.target.result;
     };
     reader.readAsDataURL(file);
+}
+
+function handleIssueImagePaste(e) {
+    const modal = document.getElementById("modal-issue");
+    if (!modal || !modal.classList.contains("active")) return;
+
+    const items = (e.clipboardData || window.clipboardData).items;
+    for (let i = 0; i < items.length; i++) {
+        if (items[i].type.indexOf("image") !== -1) {
+            const blob = items[i].getAsFile();
+            if (blob) {
+                processFileAndCompress(blob, "Đã dán ảnh (Ctrl+V)");
+                e.preventDefault();
+                break;
+            }
+        }
+    }
 }
 
 function handleIssueImageUrlInput(input) {
@@ -1890,6 +1914,7 @@ window.deleteSubLink = deleteSubLink;
 window.handleIssueImageUpload = handleIssueImageUpload;
 window.handleIssueImageUrlInput = handleIssueImageUrlInput;
 window.clearIssueImage = clearIssueImage;
+window.handleIssueImagePaste = handleIssueImagePaste;
 
 // ----------------- 10. NHẬP / XUẤT SAO LƯU JSON & RESET DATABASE -----------------
 function exportData() {
