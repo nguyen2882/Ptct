@@ -1401,6 +1401,12 @@ function renderIssues() {
             </div>
             <h3 class="issue-title">${issue.title}</h3>
             
+            ${issue.image ? `
+                <div class="issue-image-container" style="margin-top: 10px; margin-bottom: 12px; border-radius: var(--radius-md); overflow: hidden; border: 1px solid var(--border-glass); max-height: 160px;">
+                    <img src="${issue.image}" style="width: 100%; height: 160px; object-fit: cover;">
+                </div>
+            ` : ''}
+            
             <div class="issue-section">
                 <span class="issue-section-title"><i class="fa-solid fa-circle-info"></i> Hiện tượng nhận biết</span>
                 <div class="issue-symptom">${issue.symptom}</div>
@@ -1421,6 +1427,7 @@ function openIssueModal(issueId = null) {
     const titleEl = document.getElementById("issue-modal-title");
 
     form.reset();
+    clearIssueImage();
 
     if (issueId) {
         titleEl.innerText = "Chỉnh sửa sự cố";
@@ -1431,6 +1438,17 @@ function openIssueModal(issueId = null) {
             document.getElementById("issue-dept-input").value = issue.dept;
             document.getElementById("issue-symptom-input").value = issue.symptom;
             document.getElementById("issue-solution-input").value = issue.solution;
+            if (issue.image) {
+                document.getElementById("issue-image-data").value = issue.image;
+                document.getElementById("issue-image-preview").src = issue.image;
+                document.getElementById("issue-image-preview-container").style.display = "block";
+                if (issue.image.startsWith("data:")) {
+                    document.getElementById("issue-image-status").innerText = "Đã tải ảnh lên";
+                } else {
+                    document.getElementById("issue-image-url").value = issue.image;
+                    document.getElementById("issue-image-status").innerText = "Đã dán Link ảnh";
+                }
+            }
         }
     } else {
         titleEl.innerText = "Thêm sự cố thường gặp";
@@ -1452,6 +1470,7 @@ function handleIssueFormSubmit(e) {
     const dept = document.getElementById("issue-dept-input").value;
     const symptom = document.getElementById("issue-symptom-input").value.trim();
     const solution = document.getElementById("issue-solution-input").value.trim();
+    const image = document.getElementById("issue-image-data").value.trim();
 
     if (id) {
         // Edit mode
@@ -1462,7 +1481,8 @@ function handleIssueFormSubmit(e) {
                 title,
                 dept,
                 symptom,
-                solution
+                solution,
+                image: image || null
             };
             saveState("issues");
         }
@@ -1473,7 +1493,8 @@ function handleIssueFormSubmit(e) {
             title,
             dept,
             symptom,
-            solution
+            solution,
+            image: image || null
         };
         state.issues.push(newIssue);
         saveState("issues");
@@ -1481,6 +1502,73 @@ function handleIssueFormSubmit(e) {
 
     closeIssueModal();
     renderIssues();
+}
+
+function handleIssueImageUpload(input) {
+    const file = input.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function (e) {
+        const img = new Image();
+        img.onload = function () {
+            // Compress using Canvas
+            const canvas = document.createElement("canvas");
+            let width = img.width;
+            let height = img.height;
+            const max_size = 800;
+
+            if (width > height) {
+                if (width > max_size) {
+                    height *= max_size / width;
+                    width = max_size;
+                }
+            } else {
+                if (height > max_size) {
+                    width *= max_size / height;
+                    height = max_size;
+                }
+            }
+
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext("2d");
+            ctx.drawImage(img, 0, 0, width, height);
+
+            // Convert to JPEG with quality 0.7
+            const dataUrl = canvas.toDataURL("image/jpeg", 0.7);
+
+            document.getElementById("issue-image-data").value = dataUrl;
+            document.getElementById("issue-image-url").value = "";
+            document.getElementById("issue-image-preview").src = dataUrl;
+            document.getElementById("issue-image-preview-container").style.display = "block";
+            document.getElementById("issue-image-status").innerText = "Đã tải ảnh lên";
+        };
+        img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+}
+
+function handleIssueImageUrlInput(input) {
+    const url = input.value.trim();
+    if (url) {
+        document.getElementById("issue-image-data").value = url;
+        document.getElementById("issue-image-file").value = "";
+        document.getElementById("issue-image-preview").src = url;
+        document.getElementById("issue-image-preview-container").style.display = "block";
+        document.getElementById("issue-image-status").innerText = "Đã dán Link ảnh";
+    } else {
+        clearIssueImage();
+    }
+}
+
+function clearIssueImage() {
+    document.getElementById("issue-image-file").value = "";
+    document.getElementById("issue-image-url").value = "";
+    document.getElementById("issue-image-data").value = "";
+    document.getElementById("issue-image-preview").src = "";
+    document.getElementById("issue-image-preview-container").style.display = "none";
+    document.getElementById("issue-image-status").innerText = "Không có ảnh";
 }
 
 function deleteIssue(issueId) {
@@ -1774,6 +1862,16 @@ function openIssueDetailModal(issueId) {
     document.getElementById("issue-detail-symptom").innerText = issue.symptom;
     document.getElementById("issue-detail-solution").innerText = issue.solution;
 
+    const imgContainer = document.getElementById("issue-detail-image-container");
+    const imgEl = document.getElementById("issue-detail-image");
+    if (issue.image) {
+        imgEl.src = issue.image;
+        imgContainer.style.display = "block";
+    } else {
+        imgEl.src = "";
+        imgContainer.style.display = "none";
+    }
+
     if (modal) modal.classList.add("active");
 }
 
@@ -1789,6 +1887,9 @@ window.openIssueDetailModal = openIssueDetailModal;
 window.closeIssueDetailModal = closeIssueDetailModal;
 window.toggleSublinks = toggleSublinks;
 window.deleteSubLink = deleteSubLink;
+window.handleIssueImageUpload = handleIssueImageUpload;
+window.handleIssueImageUrlInput = handleIssueImageUrlInput;
+window.clearIssueImage = clearIssueImage;
 
 // ----------------- 10. NHẬP / XUẤT SAO LƯU JSON & RESET DATABASE -----------------
 function exportData() {

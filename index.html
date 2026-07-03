@@ -632,6 +632,27 @@
                         <label class="form-label" for="issue-solution-input">Cách khắc phục từng bước *</label>
                         <textarea class="form-textarea" id="issue-solution-input" style="min-height: 120px;" placeholder="Ví dụ: 1. Kiểm tra lại jack cáp VGA ở đầu máy và Laptop. 2. Nếu lỏng chân, cắm chặt lại..." required></textarea>
                     </div>
+
+                    <div class="form-group">
+                        <label class="form-label" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                            <span>Hình ảnh minh họa (Không bắt buộc)</span>
+                            <span id="issue-image-status" style="font-size: 11px; color: var(--text-muted); font-weight: normal;">Không có ảnh</span>
+                        </label>
+                        <div style="display: flex; gap: 8px; align-items: center;">
+                            <button type="button" class="btn btn-secondary" onclick="document.getElementById('issue-image-file').click();" style="font-size: 12px; padding: 7px 12px; white-space: nowrap;">
+                                <i class="fa-solid fa-cloud-arrow-up"></i> Chọn ảnh
+                            </button>
+                            <input type="file" id="issue-image-file" accept="image/*" style="display: none;" onchange="handleIssueImageUpload(this)">
+                            <input type="text" class="form-input" id="issue-image-url" placeholder="Hoặc dán Link URL ảnh tại đây" style="font-size: 12px; padding: 6px 10px; flex: 1;" oninput="handleIssueImageUrlInput(this)">
+                        </div>
+                        <input type="hidden" id="issue-image-data" value="">
+                        <div id="issue-image-preview-container" style="display: none; margin-top: 10px; position: relative; border-radius: var(--radius-md); overflow: hidden; border: 1px solid var(--border-glass); max-height: 120px;">
+                            <img id="issue-image-preview" src="" style="width: 100%; height: 120px; object-fit: cover;">
+                            <button type="button" class="btn-icon" style="position: absolute; top: 6px; right: 6px; background: rgba(0, 0, 0, 0.6); color: #fff; width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: none; cursor: pointer;" onclick="clearIssueImage()" title="Xóa ảnh">
+                                <i class="fa-solid fa-xmark"></i>
+                            </button>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" id="btn-cancel-issue-modal">Hủy</button>
@@ -696,6 +717,10 @@
                 <h4 id="issue-detail-title" style="font-size: 16px; font-weight: 700; color: var(--text-primary);"></h4>
                 <span class="tag" id="issue-detail-dept-tag"></span>
                 
+                <div id="issue-detail-image-container" style="display: none; border-radius: var(--radius-md); overflow: hidden; border: 1px solid var(--border-glass); max-height: 200px;">
+                    <img id="issue-detail-image" src="" style="width: 100%; max-height: 200px; object-fit: contain; background-color: var(--bg-tertiary);">
+                </div>
+
                 <div class="issue-section">
                     <span class="issue-section-title"><i class="fa-solid fa-circle-info"></i> Hiện tượng nhận biết</span>
                     <div class="issue-symptom" id="issue-detail-symptom" style="margin-top: 6px;"></div>
