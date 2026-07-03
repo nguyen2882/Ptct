@@ -1649,12 +1649,8 @@ function renderQuickLinks() {
 
     state.quicklinks.forEach(link => {
         const item = document.createElement("div");
-        item.className = "quicklink-item-wrapper";
-        item.style.display = "flex";
-        item.style.flexDirection = "column";
-        item.style.gap = "4px";
-
         const hasSublinks = link.sublinks && link.sublinks.length > 0;
+        item.className = "quicklink-item-wrapper" + (hasSublinks ? " has-sublinks" : "");
 
         let iconClass = "";
         let iconColor = "";
@@ -1674,16 +1670,15 @@ function renderQuickLinks() {
         let content = "";
         if (hasSublinks) {
             content = `
-                <div class="quicklink-item" onclick="toggleSublinks('${link.id}', event)" style="cursor: pointer; display: flex; align-items: center; justify-content: space-between; width: 100%;">
-                    <div class="quicklink-item-left" style="width: calc(100% - 60px); display: flex; align-items: center; gap: 4px;">
-                        <i class="fa-solid fa-chevron-right sublinks-toggle-icon" id="toggle-icon-${link.id}" style="transition: transform 0.2s; font-size: 10px; color: var(--text-muted); margin-right: 4px;"></i>
-                        <span class="quicklink-icon-wrapper" style="display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 8px; background-color: ${iconBg}; color: ${iconColor}; margin-right: 6px; flex-shrink: 0; font-size: 12px;">
+                <div class="quicklink-item" onclick="toggleSublinks('${link.id}', event)" style="cursor: pointer; display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 6px 10px;" title="${link.description || ''}">
+                    <div class="quicklink-item-left" style="width: calc(100% - 50px); display: flex; align-items: center; gap: 4px;">
+                        <i class="fa-solid fa-chevron-right sublinks-toggle-icon" id="toggle-icon-${link.id}" style="transition: transform 0.2s; font-size: 8px; color: var(--text-muted); margin-right: 2px;"></i>
+                        <span class="quicklink-icon-wrapper" style="display: flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 6px; background-color: ${iconBg}; color: ${iconColor}; margin-right: 4px; flex-shrink: 0; font-size: 11px;">
                             <i class="${iconClass}"></i>
                         </span>
-                        <div style="display: flex; flex-direction: column; gap: 1px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: left;">
-                            <span style="font-weight: 600; color: var(--text-primary); font-size: 13px;">${link.title}</span>
-                            <span style="font-size: 10px; color: var(--text-muted); font-weight: normal;">${link.sublinks.length} lựa chọn con</span>
-                        </div>
+                        <span style="font-weight: 600; color: var(--text-primary); font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                            ${link.title} <span style="font-size: 10px; color: var(--text-muted); font-weight: normal;">(${link.sublinks.length})</span>
+                        </span>
                     </div>
                     <div style="display: flex; align-items: center; gap: 4px;">
                         <button class="quicklink-edit-btn" onclick="openQuickLinkModal('${link.id}', event)" title="Sửa liên kết">
@@ -1694,14 +1689,14 @@ function renderQuickLinks() {
                         </button>
                     </div>
                 </div>
-                <div class="quicklink-sublinks-container" id="sublinks-${link.id}" style="display: none; padding-left: 18px; margin-left: 28px; border-left: 2px dashed var(--border-glass); margin-top: 6px; flex-direction: column; gap: 6px; margin-bottom: 8px;">
+                <div class="quicklink-sublinks-container" id="sublinks-${link.id}" style="display: none; padding-left: 14px; margin-left: 21px; border-left: 1px dashed var(--border-glass); margin-top: 4px; flex-direction: column; gap: 4px; margin-bottom: 6px;">
                     ${link.sublinks.map(sub => `
-                        <div class="quicklink-sub-item" style="display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; background-color: var(--bg-secondary); border: 1px solid var(--border-glass); border-radius: var(--radius-md); font-size: 12px; transition: var(--transition); position: relative;">
-                            <a href="${sub.url}" target="_blank" style="color: inherit; text-decoration: none; display: flex; align-items: center; gap: 8px; width: calc(100% - 45px); font-weight: 500; text-align: left;">
-                                <span style="display: flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 6px; background-color: var(--bg-tertiary); color: var(--text-muted); font-size: 10px; flex-shrink: 0;">
+                        <div class="quicklink-sub-item" style="display: flex; align-items: center; justify-content: space-between; padding: 6px 10px; background-color: var(--bg-secondary); border: 1px solid var(--border-glass); border-radius: var(--radius-md); font-size: 11px; transition: var(--transition); position: relative;">
+                            <a href="${sub.url}" target="_blank" style="color: inherit; text-decoration: none; display: flex; align-items: center; gap: 6px; width: calc(100% - 40px); font-weight: 500; text-align: left;">
+                                <span style="display: flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 5px; background-color: var(--bg-tertiary); color: var(--text-muted); font-size: 9px; flex-shrink: 0;">
                                     <i class="fa-solid fa-link"></i>
                                 </span>
-                                <span style="font-size: 12px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${sub.title}</span>
+                                <span style="font-size: 11px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${sub.title}</span>
                             </a>
                             <div style="display: flex; align-items: center; gap: 2px;">
                                 <button class="quicklink-sub-edit-btn" onclick="openQuickLinkModal('${link.id}', event)" title="Sửa lựa chọn">
@@ -1717,15 +1712,12 @@ function renderQuickLinks() {
             `;
         } else {
             content = `
-                <div class="quicklink-item" style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
-                    <a href="${link.url}" target="_blank" class="quicklink-item-left" style="color: inherit; text-decoration: none; display: flex; align-items: center; gap: 4px; width: calc(100% - 60px); text-align: left;">
-                        <span class="quicklink-icon-wrapper" style="display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 8px; background-color: ${iconBg}; color: ${iconColor}; margin-right: 6px; flex-shrink: 0; font-size: 12px;">
+                <div class="quicklink-item" style="display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 6px 10px;" title="${link.description || ''}">
+                    <a href="${link.url}" target="_blank" class="quicklink-item-left" style="color: inherit; text-decoration: none; display: flex; align-items: center; gap: 4px; width: calc(100% - 50px); text-align: left;">
+                        <span class="quicklink-icon-wrapper" style="display: flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 6px; background-color: ${iconBg}; color: ${iconColor}; margin-right: 4px; flex-shrink: 0; font-size: 11px;">
                             <i class="${iconClass}"></i>
                         </span>
-                        <div style="display: flex; flex-direction: column; gap: 1px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-                            <span style="font-weight: 600; color: var(--text-primary); font-size: 13px;">${link.title}</span>
-                            ${link.description ? `<span style="font-size: 10px; color: var(--text-muted); font-weight: normal; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%;" title="${link.description}">${link.description}</span>` : ''}
-                        </div>
+                        <span style="font-weight: 600; color: var(--text-primary); font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${link.title}</span>
                     </a>
                     <div style="display: flex; align-items: center; gap: 4px;">
                         <button class="quicklink-edit-btn" onclick="openQuickLinkModal('${link.id}', event)" title="Sửa liên kết">
